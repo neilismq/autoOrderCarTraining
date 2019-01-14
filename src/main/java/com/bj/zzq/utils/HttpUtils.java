@@ -1,6 +1,7 @@
 package com.bj.zzq.utils;
 
-import com.sun.deploy.net.cookie.CookieUnavailableException;
+import com.bj.zzq.Main;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
@@ -15,6 +16,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
@@ -23,8 +25,9 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +37,7 @@ import java.util.Map;
  * @Description:
  */
 public class HttpUtils {
+    private static Logger log = Logger.getLogger(HttpUtils.class.getClass());
     private static String cookie = "";
     //学车不登录地址
     public static String loginUrl = "https://api.xuechebu.com/usercenter/userinfo/login";
@@ -102,14 +106,21 @@ public class HttpUtils {
         }
 
         //设置代理,方便查看请求
-//        HttpHost proxy = new HttpHost("127.0.0.1", 8888, "http");
-//        RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
-//        httpRequestBase.setConfig(config);
+        if (StringUtils.isNotBlank(ConfProperties.proxyIp) && StringUtils.isNotBlank(ConfProperties.proxyProtocol) && ConfProperties.proxyPort != null) {
+            HttpHost proxy = new HttpHost(ConfProperties.proxyIp, ConfProperties.proxyPort, ConfProperties.proxyProtocol);
+            RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
+            httpRequestBase.setConfig(config);
+        }
 
         // 执行请求
         CloseableHttpResponse response = httpclient.execute(httpRequestBase);
         String result = EntityUtils.toString(response.getEntity(), "UTF-8");
 
+        if (result.contains("身份认证失败") || result.contains("重新登录")) {
+            //每个请求都有可能返回 "身份认证失败"
+            cookie = "";
+            Main.login();
+        }
         // 如果是登录请求，获取cookie
         if (loginUrl.equals(url) || longquanjiaxiaoLoginUrl.equals(url)) {
             Header[] allHeaders = response.getAllHeaders();
@@ -126,8 +137,7 @@ public class HttpUtils {
                 cookie = cookie.substring(0, cookie.length() - 1);
             }
         }
-        System.out.println("地址：" + url + "返回结果：");
-        System.out.println(result);
+        log.info("地址："+url+"返回信息："+result);
         return result;
     }
 
