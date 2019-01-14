@@ -28,30 +28,41 @@ public class Main {
     private static Logger log = Logger.getLogger(Main.class);
 
     public static void main(String[] args) throws URISyntaxException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException, ParseException, InterruptedException {
-        doSomething();
-        Timer timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    doSomething();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        Calendar instance = Calendar.getInstance();
-        instance.set(Calendar.HOUR_OF_DAY, 6);
-        instance.set(Calendar.MINUTE, 59);
-        instance.set(Calendar.SECOND, 59);
-        instance.set(Calendar.MILLISECOND, 500);
-        Date now = new Date();
+//        String path = Main.class.getClassLoader().getResource("").toString();
+//        String os = System.getProperty("os.name");
+//        if (os.contains("Window")) {
+//            path = path.substring(6);
+//        } else if (os.contains("Linux")) {
+//
+//        } else {
+//
+//        }
+//        System.setProperty("systemPath", path);
 
-        if (now.after(instance.getTime())) {
-            instance.add(Calendar.DAY_OF_YEAR, 1);
-        }
-        Date start = instance.getTime();
-        timer.schedule(timerTask, start, 1000 * 60 * 60 * 24 * 1);
+        doSomething();
+//        Timer timer = new Timer();
+//        TimerTask timerTask = new TimerTask() {
+//            @Override
+//            public void run() {
+//                try {
+//                    doSomething();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        Calendar instance = Calendar.getInstance();
+//        instance.set(Calendar.HOUR_OF_DAY, 6);
+//        instance.set(Calendar.MINUTE, 59);
+//        instance.set(Calendar.SECOND, 59);
+//        instance.set(Calendar.MILLISECOND, 500);
+//        Date now = new Date();
+//
+//        if (now.after(instance.getTime())) {
+//            instance.add(Calendar.DAY_OF_YEAR, 1);
+//        }
+//        Date start = instance.getTime();
+//        timer.schedule(timerTask, start, 1000 * 60 * 60 * 24 * 1);
 
     }
 
@@ -104,7 +115,7 @@ public class Main {
                 Thread.sleep(5000);
                 continue;
             }
-            String replace = result3.substring(result3.indexOf("\""), result3.length() - 2).replace("\\r\\n", "").replace("\\", "");
+            String replace = result3.substring(result3.indexOf("\"") + 1, result3.length() - 2).replace("\\r\\n", "").replace("\\", "");
             JSONObject jsonObject = (JSONObject) JSON.parse(replace);
             JSONObject JSONObject2 = (JSONObject) jsonObject.get("data");
             JSONArray uiDatas = JSONObject2.getJSONArray("UIDatas");
@@ -130,7 +141,7 @@ public class Main {
                 params5.put("isJcsdYyMode", "1");
                 HttpUtils.addJsonpParams(params5);
                 String result5 = HttpUtils.doHttp("get", HttpUtils.orderUrl, null, params5);
-                result5 = result5.substring(result5.indexOf("\""), result5.length() - 2).replace("\\r\\n", "").replace("\\", "");
+                result5 = result5.substring(result5.indexOf("\"") + 1, result5.length() - 2).replace("\\r\\n", "").replace("\\", "");
                 JSONObject jsonObject5 = (JSONObject) JSON.parse(result5);
                 int code = jsonObject5.getInteger("code");
                 if (code == 0) {
