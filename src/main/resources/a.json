@@ -1,0 +1,356 @@
+{
+  "data": {
+    //时间段代号，早中晚
+    "XnsdList": [
+      {
+        "Xnsd": "812",
+        "XnsdName": "08:00-12:00"
+      },
+      {
+        "Xnsd": "15",
+        "XnsdName": "13:00-17:00"
+      },
+      {
+        "Xnsd": "58",
+        "XnsdName": "17:00-20:00"
+      }
+    ],
+    "YyrqList": [
+      {
+        "Yyrq": "2019/01/11 17:48:05",
+        "DisplayWeek": "周五",
+        "DisplayYyrq": "01-11"
+      },
+      {
+        "Yyrq": "2019/01/12 17:48:05",
+        "DisplayWeek": "周六",
+        "DisplayYyrq": "01-12"
+      },
+      {
+        "Yyrq": "2019/01/13 17:48:05",
+        "DisplayWeek": "周日",
+        "DisplayYyrq": "01-13"
+      },
+      {
+        "Yyrq": "2019/01/14 17:48:05",
+        "DisplayWeek": "周一",
+        "DisplayYyrq": "01-14"
+      },
+      {
+        "Yyrq": "2019/01/15 17:48:05",
+        "DisplayWeek": "周二",
+        "DisplayYyrq": "01-15"
+      },
+      {
+        "Yyrq": "2019/01/16 17:48:05",
+        "DisplayWeek": "周三",
+        "DisplayYyrq": "01-16"
+      },
+      {
+        "Yyrq": "2019/01/17 17:48:05",
+        "DisplayWeek": "周四",
+        "DisplayYyrq": "01-17"
+      }
+    ],
+    "QsList": null,
+    "UIDatas": [
+      {
+        "Yyrq": "2019/01/11 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "812",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/11 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "15",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/11 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "58",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/12 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "812",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/12 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "15",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/12 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "58",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/13 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "812",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/13 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "15",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/13 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "58",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/14 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "812",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/14 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "15",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/14 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "58",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/15 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "812",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/15 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "15",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/15 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "58",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/16 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "812",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/16 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "15",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/16 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "58",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/17 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "812",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/17 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "15",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      },
+      {
+        "Yyrq": "2019/01/17 17:48:05",
+        "YyrqXH": 0,
+        "Xnsd": "58",
+        "XnsdName": null,
+        "QsName": null,
+        "Qsid": null,
+        "SL": 0,
+        "KS": 0,
+        "IsBpked": false,
+        "IsBpked_SK": 0,
+        "IsCreate": true,
+        "YyClInfo": ""
+      }
+    ]
+  },
+  "code": 0,
+  "message": ""
+}
+
