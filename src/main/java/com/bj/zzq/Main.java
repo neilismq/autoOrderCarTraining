@@ -28,41 +28,29 @@ public class Main {
     private static Logger log = Logger.getLogger(Main.class);
 
     public static void main(String[] args) throws URISyntaxException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException, ParseException, InterruptedException {
-//        String path = Main.class.getClassLoader().getResource("").toString();
-//        String os = System.getProperty("os.name");
-//        if (os.contains("Window")) {
-//            path = path.substring(6);
-//        } else if (os.contains("Linux")) {
-//
-//        } else {
-//
-//        }
-//        System.setProperty("systemPath", path);
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    doSomething();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Calendar instance = Calendar.getInstance();
+        instance.set(Calendar.HOUR_OF_DAY, 6);
+        instance.set(Calendar.MINUTE, 59);
+        instance.set(Calendar.SECOND, 59);
+        instance.set(Calendar.MILLISECOND, 500);
+        Date now = new Date();
 
-        doSomething();
-//        Timer timer = new Timer();
-//        TimerTask timerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                try {
-//                    doSomething();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//        Calendar instance = Calendar.getInstance();
-//        instance.set(Calendar.HOUR_OF_DAY, 6);
-//        instance.set(Calendar.MINUTE, 59);
-//        instance.set(Calendar.SECOND, 59);
-//        instance.set(Calendar.MILLISECOND, 500);
-//        Date now = new Date();
-//
-//        if (now.after(instance.getTime())) {
-//            instance.add(Calendar.DAY_OF_YEAR, 1);
-//        }
-//        Date start = instance.getTime();
-//        timer.schedule(timerTask, start, 1000 * 60 * 60 * 24 * 1);
+        if (now.after(instance.getTime())) {
+            instance.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        Date start = instance.getTime();
+        timer.schedule(timerTask, start, 1000 * 60 * 60 * 24 * 1);
 
     }
 
