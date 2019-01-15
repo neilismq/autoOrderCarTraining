@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bj.zzq.utils.ConfProperties;
+import com.bj.zzq.utils.EmailUtils;
 import com.bj.zzq.utils.HttpUtils;
 import com.bj.zzq.utils.PickScheduler;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -132,11 +133,74 @@ public class Main {
             int code = jsonObject5.getInteger("code");
             if (code == 0) {
                 log.info("抢到了！！！！！！ " + orderDate + " " + xnsd);
+                String finalXnsd = xnsd;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String howTime = "";
+                        if (finalXnsd.equals("15")) {
+                            howTime = "下午1点到5点";
+                        } else if (finalXnsd.equals("812")) {
+                            howTime = "上午8点到12点";
+                        } else if (finalXnsd.equals("58")) {
+                            howTime = "下午5点到8点";
+                        }
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        int numInWeek = 0;
+                        try {
+                            Date date = sdf.parse(orderDate);
+                            Calendar instance = Calendar.getInstance();
+                            instance.setTime(date);
+                            numInWeek = instance.get(Calendar.DAY_OF_WEEK);
+                        } catch (ParseException e) {
+                            log.info("解析日期失败", e);
+                        }
+                        String numInWeekUpper = numWeekToUpper(numInWeek);
+                        EmailUtils.sendEmail("龙泉驾校约车成功", "恭喜你约到 " + orderDate + " (周" + numInWeekUpper + ") " + howTime + "的车，详情请登录学车不查看！");
+                    }
+                }).start();
                 return;
             }
         }
 
 
+    }
+
+    public static String numWeekToUpper(int numInWeek) {
+        String numInWeekUpper = "";
+        switch (numInWeek) {
+            case 1: {
+                numInWeekUpper = "日";
+                break;
+            }
+            case 2: {
+                numInWeekUpper = "一";
+                break;
+            }
+            case 3: {
+                numInWeekUpper = "二";
+                break;
+            }
+            case 4: {
+                numInWeekUpper = "三";
+                break;
+            }
+            case 5: {
+                numInWeekUpper = "四";
+                break;
+            }
+            case 6: {
+                numInWeekUpper = "五";
+                break;
+            }
+            case 7: {
+                numInWeekUpper = "六";
+                break;
+            }
+            default:
+                numInWeekUpper = "转换出错，请输入正确的星期数字(1-7)";
+        }
+        return numInWeekUpper;
     }
 
     public static void focusOnFire() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException, InterruptedException {
@@ -220,6 +284,33 @@ public class Main {
                 int code = jsonObject5.getInteger("code");
                 if (code == 0) {
                     log.info("抢到了！！！！！！ " + orderDate + " " + xnsd);
+                    String finalXnsd = xnsd;
+                    String finalOrderDate = orderDate;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String howTime = "";
+                            if (finalXnsd.equals("15")) {
+                                howTime = "下午1点到5点";
+                            } else if (finalXnsd.equals("812")) {
+                                howTime = "上午8点到12点";
+                            } else if (finalXnsd.equals("58")) {
+                                howTime = "下午5点到8点";
+                            }
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                            int numInWeek = 0;
+                            try {
+                                Date date = sdf.parse(finalOrderDate);
+                                Calendar instance = Calendar.getInstance();
+                                instance.setTime(date);
+                                numInWeek = instance.get(Calendar.DAY_OF_WEEK);
+                            } catch (ParseException e) {
+                                log.info("解析日期失败", e);
+                            }
+                            String numInWeekUpper = numWeekToUpper(numInWeek);
+                            EmailUtils.sendEmail("龙泉驾校约车成功", "恭喜你约到 " + finalOrderDate + " (周" + numInWeekUpper + ") " + howTime + "的车，详情请登录学车不查看！");
+                        }
+                    }).start();
                     isOrder = true;
                     break;
                 }

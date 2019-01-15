@@ -17,6 +17,10 @@ public class ConfProperties {
     public static String proxyIp;
     public static Integer proxyPort;
 
+    public static String emailSenderAddr;
+    public static String emailSenderPasswordOrAuthorizatioCode;
+    public static String emailReceiverAddr;
+
     static {
         properties = new Properties();
         InputStream inputStream = ConfProperties.class.getClassLoader().getResourceAsStream("application.properties");
@@ -34,5 +38,8 @@ public class ConfProperties {
         proxyIp = properties.getProperty("proxyIp");
         String proxyPort2 = properties.getProperty("proxyPort");
         proxyPort = (proxyPort2 == null ? 0 : Integer.valueOf(proxyPort2));
+        emailSenderAddr = properties.getProperty("emailSenderAddr");
+        emailSenderPasswordOrAuthorizatioCode = properties.getProperty("emailSenderPasswordOrAuthorizatioCode");
+        emailReceiverAddr = properties.getProperty("emailReceiverAddr");
     }
 }
