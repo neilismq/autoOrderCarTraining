@@ -20,7 +20,7 @@ public class PickScheduler {
         JobDetail jobDetail = JobBuilder.newJob(PickJob.class).withIdentity("pickJob", "pickGroup").storeDurably(false).build();
         //创建触发器,周二到周六捡漏，只捡漏周六周日的号
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity("pickTrigger", "pickTriggerGroup")
-                .withSchedule(CronScheduleBuilder.cronSchedule("* */5 * ? * 3-7 *")).build();
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * ? * 3-7 ")).build();
         Scheduler scheduler = getScheduler();
         //将任务及其触发器放入调度器
         scheduler.scheduleJob(jobDetail, trigger);
