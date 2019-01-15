@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bj.zzq.utils.ConfProperties;
 import com.bj.zzq.utils.HttpUtils;
+import com.bj.zzq.utils.PickScheduler;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.quartz.SchedulerException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -27,13 +29,16 @@ import java.util.*;
 public class Main {
     private static Logger log = Logger.getLogger(Main.class);
 
-    public static void main(String[] args) throws URISyntaxException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException, ParseException, InterruptedException {
+    public static void main(String[] args) throws URISyntaxException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException, ParseException, InterruptedException, SchedulerException {
+        //集中火力
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 try {
-                    doSomething();
+                    log.info("集中火力timer任务开始-------------------------------");
+                    focusOnFire();
+                    log.info("集中火力timer任务结束-------------------------------");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -52,9 +57,89 @@ public class Main {
         Date start = instance.getTime();
         timer.schedule(timerTask, start, 1000 * 60 * 60 * 24 * 1);
 
+        //平时捡漏
+        PickScheduler mainScheduler = new PickScheduler();
+        mainScheduler.schedulerJob();
+
     }
 
-    public static void doSomething() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException, InterruptedException {
+    /**
+     * 平时捡漏
+     *
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws KeyStoreException
+     * @throws KeyManagementException
+     * @throws URISyntaxException
+     * @throws InterruptedException
+     */
+    public static void picker(String orderDate) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException, InterruptedException {
+        String xxzh = login();
+        //获取用户信息
+        String cnbh = ConfProperties.cnbh;
+        if (StringUtils.isBlank(cnbh)) {
+            //获取cnbh
+            HashMap<String, String> params4 = new HashMap<>();
+            params4.put("xxzh", xxzh);
+            String resultStudent = HttpUtils.doHttp("get", HttpUtils.userInfoUrl, null, params4);
+            JSONObject jsonObject = (JSONObject) JSON.parse(resultStudent);
+            JSONObject data = jsonObject.getJSONObject("data");
+            cnbh = data.getString("CNBH");
+        }
+
+        //查询是否有号
+        HashMap<String, String> params3 = new HashMap<>();
+        HttpUtils.addJsonpParams(params3);
+        params3.put("xxzh", xxzh);
+        String result3 = HttpUtils.doHttp("get", HttpUtils.orderQueryUrl, null, params3);
+        //jQuery19103597663931350108_1547188429681({
+        //  "data": null,
+        //  "code": 111,
+        //  "message": "访问太过频繁,请输入验证码！"
+        //})
+        if (result3.contains("验证码")) {
+            Thread.sleep(5000);
+            return;
+        }
+        String replace = result3.substring(result3.indexOf("\"") + 1, result3.length() - 2).replace("\\r\\n", "").replace("\\", "");
+        JSONObject jsonObject = (JSONObject) JSON.parse(replace);
+        JSONObject JSONObject2 = (JSONObject) jsonObject.get("data");
+        JSONArray uiDatas = JSONObject2.getJSONArray("UIDatas");
+        for (int i = 0; i < uiDatas.size(); i++) {
+            JSONObject o = (JSONObject) uiDatas.get(i);
+            Integer sl = o.getInteger("SL");
+            String yyrq = o.getString("Yyrq"); //2019/01/15 17:58:51
+            String Xnsd = o.getString("Xnsd"); // 时间段 1点到5点 简称 15
+            yyrq = yyrq.substring(0, 10).replaceAll("/", "-");
+            String xnsd = ConfProperties.timeSlot;
+            if (StringUtils.isBlank(xnsd)) {
+                xnsd = "15";
+            }
+            if (sl <= 0 || !xnsd.equals(Xnsd) || !orderDate.equals(yyrq)) {
+                continue;
+            }
+
+            //有号，可以预约了
+            HashMap params5 = new HashMap();
+            params5.put("cnbh", cnbh);
+            params5.put("xxzh", xxzh);
+            params5.put("params", cnbh + "." + yyrq + "." + xnsd + ".");
+            params5.put("isJcsdYyMode", "1");
+            HttpUtils.addJsonpParams(params5);
+            String result5 = HttpUtils.doHttp("get", HttpUtils.orderUrl, null, params5);
+            result5 = result5.substring(result5.indexOf("\"") + 1, result5.length() - 2).replace("\\r\\n", "").replace("\\", "");
+            JSONObject jsonObject5 = (JSONObject) JSON.parse(result5);
+            int code = jsonObject5.getInteger("code");
+            if (code == 0) {
+                log.info("抢到了！！！！！！ " + orderDate + " " + xnsd);
+                return;
+            }
+        }
+
+
+    }
+
+    public static void focusOnFire() throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException, InterruptedException {
 
 
         //预约日期
@@ -88,7 +173,8 @@ public class Main {
 
         boolean isOrder = false;
         int count = 0;
-        while (!isOrder || count++ > 1000) {
+        //100次还抢不到那就真的抢不到了
+        while (!isOrder || count++ > 100) {
             //查询是否有号
             HashMap<String, String> params3 = new HashMap<>();
             HttpUtils.addJsonpParams(params3);
