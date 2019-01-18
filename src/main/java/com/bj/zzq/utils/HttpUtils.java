@@ -101,6 +101,10 @@ public class HttpUtils {
         }
         httpRequestBase.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
 
+        //如果是登录url,重置cookie
+        if (loginUrl.equals(url)) {
+            cookie = "";
+        }
         if (!"".equals(cookie)) {
             httpRequestBase.addHeader("Cookie", cookie);
         }
@@ -137,7 +141,7 @@ public class HttpUtils {
                 cookie = cookie.substring(0, cookie.length() - 1);
             }
         }
-        log.info("地址："+url+"返回信息："+result);
+        log.info("地址：" + url + "返回信息：" + result);
         return result;
     }
 

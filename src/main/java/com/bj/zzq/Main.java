@@ -30,7 +30,11 @@ import java.util.*;
 public class Main {
     private static Logger log = Logger.getLogger(Main.class);
 
-    public static void main(String[] args) throws URISyntaxException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException, ParseException, InterruptedException, SchedulerException {
+    public static void main(String[] args) throws SchedulerException {
+        doBusiness();
+    }
+
+    private static void doBusiness() throws SchedulerException {
         //集中火力
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
@@ -61,7 +65,6 @@ public class Main {
         //平时捡漏
         PickScheduler mainScheduler = new PickScheduler();
         mainScheduler.schedulerJob();
-
     }
 
     /**
