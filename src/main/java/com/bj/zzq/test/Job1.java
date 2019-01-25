@@ -22,16 +22,16 @@ public class Job1 implements Job {
         int count = jobDataMap.getInt("count");
         count++;
         jobDataMap.put("count", count);
-
+        System.out.println("ColorJob: " + name + " executing at " + new Date() + "\n" +
+                "  favorite color is " + color + "\n" +
+                "  execution count (from job map) is " + count + "\n" +
+                "  execution count (from job member variable) is " + _counter);
         try {
-            Thread.sleep(2L * 1000L);
+            Thread.sleep(9 * 1000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-       System.out.println("ColorJob: " + name + " executing at " + new Date() + "\n" +
-                "  favorite color is " + color + "\n" +
-                "  execution count (from job map) is " + count + "\n" +
-                "  execution count (from job member variable) is " + _counter);
+
     }
 }
