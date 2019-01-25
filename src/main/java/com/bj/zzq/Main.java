@@ -31,7 +31,7 @@ public class Main {
     private static Logger log = Logger.getLogger(Main.class);
 
     public static void main(String[] args) throws SchedulerException {
-        doBusiness();
+        //doBusiness();
     }
 
     private static void doBusiness() throws SchedulerException {

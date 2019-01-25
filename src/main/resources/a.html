@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中科院重点实验室管理系统 - 新闻动态管理</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/jquery.webui-popover.min.css" rel="stylesheet">
+    <link href="/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="/css/plugins/gritter/jquery.gritter.css"/>
+    <link href="/vendor/plugins/jsTree3/themes/default/style.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/cas.css" rel="stylesheet">
+    <link href="/css/xiaowei.css" rel="stylesheet">
+    <link href="/css/plugins/date-time/bootstrap-datetimepicker.css" rel="stylesheet">
+    <script src="/vendor/template-web.js"></script>
+    <script src="/vendor/jquery-2.1.1.js"></script>
+    <script src="/js/xlsx.core.min.js"></script>
+</head>
+<script type="text/javascript">
+    var upload_url = "/info/upload";
+    var del_url = "{:U('del_file')}";
+    var app_path = "__ROOT__";
+    var cookie_prefix = "{:C('COOKIE_PREFIX')}";
+    var link_select = "{:U('Popup/link_select')}";
+    var _hmt = _hmt || [];
+    (function () {
+        /*var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?2a935166b0c9b73fef3c8bae58b95fe4";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);*/
+        console.log(window.location)
+    })();
+</script>
+<body class="zky_index_page">
+<div class="shade"></div>
+<nav class="navbar navbar-default nav_zky">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="container-fluid1">
+        <!-- <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#defaultNavbar1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> -->
+        <a class="navbar-logo pull-left" href="/">
+            <img class="zky_top_logo" src="/img/zky_top_logo.png"/>
+        </a>
+        <div class="pull-right mr-10">
+            <div class="navbar-logo pull-left">
+                <img src="/img/zky_top_user_icon.png"/>
+            </div>
+            <div class="dropdown pull-right">
+                <div class="zky_top_user_dept">
+                    中国科学院
+                </div>
+                <div class="dropdown-toggle zky_top_user_name text-left" data-toggle="dropdown" role="button"
+                     aria-expanded="false">
+                    系统管理员 <span class="caret"></span>
+                </div>
+                <ul class="dropdown-menu" style="right:auto !important" role="menu">
+                    <li><a href="/index.php?m=&c=Profile&a=password" class="mody_pwd">修改密码</a></li>
+                    <li><a href="/public/logout" class="logout_menu">退出</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="zky_banner text-center">
+    <div class="zky_banner_container">
+        <div class="zky_banner_txt">
+            <h2 class="banner_txt_lg text-center demo-shine-text company_name_animation" id="headline">开放 ▪ 流动 ▪ 竞争 ▪
+                联合</h2>
+            <div class="banner_txt_sm text-center company_introduce_animation">OPEN / FLEXIBLE / COMPETITIVE /
+                COOPERATIVE
+            </div>
+            <div class="banner_txt_sm text-center"></div>
+        </div>
+    </div>
+</div>
+
+<div class="container zky_body zky_inner_body">
+    <div class="body_left">
+        <div class="annual_report_panel index_menu_page">
+            <ul>
+
+                <!-- 判断是否为空，并且长度是否大于0 -->
+
+                <!-- 不为空 开始遍历 -->
+                <!-- 没有子节点！ -->
+
+                <li class="first_menu close_first_menu">
+                    <a class="menu_first_title" href='/'><i class="arrow_icon_left"></i>首页</a>
+                </li>
+                <!-- 如果是拥有子节点 -->
+
+                <li class="first_menu close_first_menu" data-targurl="annual/add">
+                    <a class="menu_first_title"><i class="arrow_icon_left"></i>年报</a>
+                    <ul class="sub_menu_ul sub_mune_cont hidden">
+                        <!-- 判断是否为空，并且长度是否大于0 -->
+
+                        <!-- 不为空 开始遍历 -->
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/annual/add'><i class="arrow_icon_left"></i>年报填报</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/flow/folder?fid=confirm&doc_no=nb'><i
+                                    class="arrow_icon_left"></i>年报审核</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/annual/index'><i class="arrow_icon_left"></i>年报查询</a>
+                        </li>
+                        <!-- 如果是拥有子节点 -->
+
+                        <li class="first_menu close_first_menu" data-targurl="北京">
+                            <a class="menu_first_title"><i class="arrow_icon_left"></i>钢琴手</a>
+                            <ul class="sub_menu_ul sub_mune_cont hidden">
+                                <!-- 判断是否为空，并且长度是否大于0 -->
+
+                                <!-- 不为空 开始遍历 -->
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/北京地都'><i class="arrow_icon_left"></i>钢琴手</a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+                <!-- 如果是拥有子节点 -->
+
+                <li class="first_menu close_first_menu" data-targurl="evaluate/first">
+                    <a class="menu_first_title"><i class="arrow_icon_left"></i>评估报告</a>
+                    <ul class="sub_menu_ul sub_mune_cont hidden">
+                        <!-- 判断是否为空，并且长度是否大于0 -->
+
+                        <!-- 不为空 开始遍历 -->
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluate/apply'><i class="arrow_icon_left"></i>评估报告填报</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/flow/folder?fid=confirm&doc_no=pg'><i
+                                    class="arrow_icon_left"></i>评估报告审核</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluate/bak##'><i class="arrow_icon_left"></i>评估意见备案</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluate/index'><i class="arrow_icon_left"></i>评估报告查询</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluate/report'><i class="arrow_icon_left"></i>数据汇总表</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluate/backtolist##'><i class="arrow_icon_left"></i>评估报告驳回</a>
+                        </li>
+
+                    </ul>
+                </li>
+                <!-- 如果是拥有子节点 -->
+
+                <li class="first_menu close_first_menu" data-targurl="index/loading4">
+                    <a class="menu_first_title"><i class="arrow_icon_left"></i>统计分析</a>
+                    <ul class="sub_menu_ul sub_mune_cont hidden">
+                        <!-- 判断是否为空，并且长度是否大于0 -->
+
+                        <!-- 不为空 开始遍历 -->
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/budget/index'><i class="arrow_icon_left"></i>预算执行率</a>
+                        </li>
+
+                    </ul>
+                </li>
+                <!-- 如果是拥有子节点 -->
+
+                <li class="first_menu close_first_menu" data-targurl="system/first">
+                    <a class="menu_first_title"><i class="arrow_icon_left"></i>系统管理</a>
+                    <ul class="sub_menu_ul sub_mune_cont hidden">
+                        <!-- 判断是否为空，并且长度是否大于0 -->
+
+                        <!-- 不为空 开始遍历 -->
+                        <!-- 如果是拥有子节点 -->
+
+                        <li class="first_menu close_first_menu" data-targurl="system/first">
+                            <a class="menu_first_title"><i class="arrow_icon_left"></i>实验室管理</a>
+                            <ul class="sub_menu_ul sub_mune_cont hidden">
+                                <!-- 判断是否为空，并且长度是否大于0 -->
+
+                                <!-- 不为空 开始遍历 -->
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/dept/manage##'><i class="arrow_icon_left"></i>实验室基础信息维护</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/dept/index'><i class="arrow_icon_left"></i>实验室管理</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/user/director'><i class="arrow_icon_left"></i>实验室主任管理</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/user/manager'><i class="arrow_icon_left"></i>实验室管理员管理</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/user/member'><i class="arrow_icon_left"></i>实验室成员管理</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/user/index'><i
+                                            class="arrow_icon_left"></i>用户管理</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <!-- 如果是拥有子节点 -->
+
+                        <li class="first_menu close_first_menu" data-targurl="role/first">
+                            <a class="menu_first_title"><i class="arrow_icon_left"></i>权限管理</a>
+                            <ul class="sub_menu_ul sub_mune_cont hidden">
+                                <!-- 判断是否为空，并且长度是否大于0 -->
+
+                                <!-- 不为空 开始遍历 -->
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/role/index'><i
+                                            class="arrow_icon_left"></i>角色管理</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/role/node'><i class="arrow_icon_left"></i>角色权限设置</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/role/user'><i class="arrow_icon_left"></i>用户角色分配</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/node/index'><i
+                                            class="arrow_icon_left"></i>菜单管理</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/permission/index'><i class="arrow_icon_left"></i>数据权限配置</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <!-- 如果是拥有子节点 -->
+
+                        <li class="first_menu close_first_menu" data-targurl="flowtype/first">
+                            <a class="menu_first_title"><i class="arrow_icon_left"></i>流程管理</a>
+                            <ul class="sub_menu_ul sub_mune_cont hidden">
+                                <!-- 判断是否为空，并且长度是否大于0 -->
+
+                                <!-- 不为空 开始遍历 -->
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/flowtype/index'><i class="arrow_icon_left"></i>流程配置</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/flowtype/tag_manage'><i
+                                            class="arrow_icon_left"></i>流程分组</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/duty/index'><i class="arrow_icon_left"></i>业务角色管理</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/role/duty'><i class="arrow_icon_left"></i>业务权限分配</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <!-- 如果是拥有子节点 -->
+
+                        <li class="first_menu close_first_menu" data-targurl="systemconfig/first">
+                            <a class="menu_first_title"><i class="arrow_icon_left"></i>系统维护</a>
+                            <ul class="sub_menu_ul sub_mune_cont hidden">
+                                <!-- 判断是否为空，并且长度是否大于0 -->
+
+                                <!-- 不为空 开始遍历 -->
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/systemconfig/index'><i
+                                            class="arrow_icon_left"></i>系统参数设置</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/info/folder?fid=54##'><i
+                                            class="arrow_icon_left"></i>通知公告管理</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/info/folder_manage##'><i
+                                            class="arrow_icon_left"></i>公告权限</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/link/index'><i class="arrow_icon_left"></i>友情链接管理</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/news/index'><i class="arrow_icon_left"></i>新闻动态管理</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/selectoption/index'><i
+                                            class="arrow_icon_left"></i>配置项管理</a>
+                                </li>
+                                <!-- 没有子节点！ -->
+
+                                <li class="first_menu close_first_menu">
+                                    <a class="menu_first_title" href='/evaluatemeetingapprove/deptlist##'><i
+                                            class="arrow_icon_left"></i>参会实验室管理</a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+                <!-- 没有子节点！ -->
+
+                <li class="first_menu close_first_menu">
+                    <a class="menu_first_title" href='/info/folder?fid=56##'><i class="arrow_icon_left"></i>规章制度</a>
+                </li>
+                <!-- 如果是拥有子节点 -->
+
+                <li class="first_menu close_first_menu" data-targurl="evaluatemeetingapprove/first">
+                    <a class="menu_first_title"><i class="arrow_icon_left"></i>会议评估</a>
+                    <ul class="sub_menu_ul sub_mune_cont hidden">
+                        <!-- 判断是否为空，并且长度是否大于0 -->
+
+                        <!-- 不为空 开始遍历 -->
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluate/approveindex'><i class="arrow_icon_left"></i>评估材料查询</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluatemeetingapprove/approve'><i
+                                    class="arrow_icon_left"></i>专家评议表</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluatemeetingapprove/apporvetotal'><i
+                                    class="arrow_icon_left"></i>专家评议汇总</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluatemeetingapprove/point'><i
+                                    class="arrow_icon_left"></i>专家打分表</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluatemeetingapprove/pointtotal'><i
+                                    class="arrow_icon_left"></i>专家打分汇总</a>
+                        </li>
+
+                    </ul>
+                </li>
+                <!-- 如果是拥有子节点 -->
+
+                <li class="first_menu close_first_menu" data-targurl="evaluatemeetingapprove/first_side">
+                    <a class="menu_first_title"><i class="arrow_icon_left"></i>现场评估</a>
+                    <ul class="sub_menu_ul sub_mune_cont hidden">
+                        <!-- 判断是否为空，并且长度是否大于0 -->
+
+                        <!-- 不为空 开始遍历 -->
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluatemeetingapprove/approve_side'><i
+                                    class="arrow_icon_left"></i>专家评议表</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluatemeetingapprove/apporvetotal_side'><i
+                                    class="arrow_icon_left"></i>专家评议汇总</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluatemeetingapprove/point_side'><i
+                                    class="arrow_icon_left"></i>专家打分表</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluatemeetingapprove/pointtotal_side'><i
+                                    class="arrow_icon_left"></i>专家打分汇总</a>
+                        </li>
+                        <!-- 没有子节点！ -->
+
+                        <li class="first_menu close_first_menu">
+                            <a class="menu_first_title" href='/evaluatemeetingapprove/approvegroup_side'><i
+                                    class="arrow_icon_left"></i>专家组意见</a>
+                        </li>
+
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+        <div class="shortcut_entrance_panel">
+            <div class="shortcut_container">
+                <a class="" href="/index.php?m=&c=Evaluate&a=add">
+                    <img class="shortcut_img" src="/img/shortcut_pgtb.png"/>
+                    <div class="shortcut_title">评估报告填报</div>
+                </a>
+            </div>
+            <div class="shortcut_container">
+                <a class="" href="/index.php?m=&amp;c=Index&amp;a=loading1">
+                    <img class="shortcut_img" src="/img/shortcut_nbtb.png"/>
+                    <div class="shortcut_title">年报填报</div>
+                </a>
+            </div>
+            <div class="shortcut_container">
+                <a class="" href="/index.php?m=&amp;c=Dept&amp;a=manage##">
+                    <img class="shortcut_img" src="/img/shortcut_xxwh.png"/>
+                    <div class="shortcut_title">基础信息维护</div>
+                </a>
+            </div>
+            <div class="shortcut_container">
+                <a class="" href="/index.php?m=&amp;c=User&amp;a=member##">
+                    <img class="shortcut_img" src="/img/shortcut_cygl.png"/>
+                    <div class="shortcut_title">实验室成员管理</div>
+                </a>
+            </div>
+            <div class="shortcut_container">
+                <a class="" href="/Uploads/user_manuals.docx">
+                    <img class="shortcut_img" src="/img/shortcut_yhsc.png"/>
+                    <div class="shortcut_title">用户手册</div>
+                </a>
+            </div>
+            <div class="shortcut_container">
+                <a class="" href="/index.php?m=&amp;c=Profile&amp;a=password">
+                    <img class="shortcut_img" src="/img/shortcut_xgmm.png"/>
+                    <div class="shortcut_title">修改密码</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="body_right">
+        <div class="annual_report_panel inner_page_menu" id="inner_page_menu">
+            <div class="wrapper border-bottom gray-bg">
+                <div class="breadcrumbs" id="breadcrumbs">
+                    <ul class="breadcrumb" id="breadcrumb_ul">
+                        <li>
+                            <i class="fa fa-home home-icon"></i>
+                            <a href="/">主页</a>
+                        </li>
+                        <li id="menu_sec_li_name">
+                            新闻动态管理
+                        </li>
+                    </ul><!-- .breadcrumb -->
+                </div>
+            </div>
+            <div class="wrapper wrapper-content">
+
+
+                <div class="col-sm-12 nopadding">
+                    <div class="col-sm-4 pull-left mb-10 nopadding">
+                        <a class="btn btn-sm btn-primary" onclick="add()">新建</a>
+                        <a class="btn btn-sm btn-danger" onclick="del();">删除</a>
+                    </div>
+                </div>
+                <div class="ul_table ul_table_responsive" style="clear:both">
+                    <ul>
+                        <li class="thead">
+                            <div class="pull-left">
+                                <label class="inline pull-left col-3">
+                                    <input class="ace" type="checkbox" name="id-toggle-all" id="id-toggle-all"/>
+                                    <span class="lbl"></span></label>
+                            </div>
+                            <div class="pull-right">
+                                <span class="col-8">状态</span>
+                                <span class="col-12">发布人</span>
+                                <span class="col-12">发布实验室</span>
+                                <span class="col-12">发布时间</span>
+                                <span class="col-12">操作</span>
+                            </div>
+                            <div class="auto">
+                                标题
+                            </div>
+                        </li>
+                        <form method="post" action="" name="form_data" id="form_data">
+                            <li class="tbody">
+                                <div class="pull-left">
+                                    <label class="inline pull-left col-3">
+                                        <input class="ace" type="checkbox" name="id[]" value="2"/>
+                                        <span class="lbl"></span></label>
+                                </div>
+                                <div class="pull-right">
+                                    <span class="col-8"> 正常&nbsp;</span>
+                                    <span class="col-12"> 系统管理员&nbsp;</span>
+                                    <span class="col-12"> 中国科学院&nbsp;</span>
+                                    <span class="col-12"> 2018-3-16 </span>
+                                    <span class="col-12"> &nbsp;</span>
+                                </div>
+                                <div class="auto">
+                                    <a href="#" onclick="read(2)">2017年材料和工程领域中国科学院重点实验室评估结果发布
+                                </div>
+                            </li>
+                        </form>
+                        <form method="post" action="" name="form_data" id="form_data">
+                            <li class="tbody">
+                                <div class="pull-left">
+                                    <label class="inline pull-left col-3">
+                                        <input class="ace" type="checkbox" name="id[]" value="4"/>
+                                        <span class="lbl"></span></label>
+                                </div>
+                                <div class="pull-right">
+                                    <span class="col-8"> 正常&nbsp;</span>
+                                    <span class="col-12"> 系统管理员&nbsp;</span>
+                                    <span class="col-12"> 中国科学院&nbsp;</span>
+                                    <span class="col-12"> 2018-3-16 </span>
+                                    <span class="col-12"> &nbsp;</span>
+                                </div>
+                                <div class="auto">
+                                    <a href="#" onclick="read(4)">中国科学院重点实验室管理工作交流研讨会在西安召开
+                                </div>
+                            </li>
+                        </form>
+                        <form method="post" action="" name="form_data" id="form_data">
+                            <li class="tbody">
+                                <div class="pull-left">
+                                    <label class="inline pull-left col-3">
+                                        <input class="ace" type="checkbox" name="id[]" value="5"/>
+                                        <span class="lbl"></span></label>
+                                </div>
+                                <div class="pull-right">
+                                    <span class="col-8"> 正常&nbsp;</span>
+                                    <span class="col-12"> 系统管理员&nbsp;</span>
+                                    <span class="col-12"> 中国科学院&nbsp;</span>
+                                    <span class="col-12"> 2018-3-16 </span>
+                                    <span class="col-12"> &nbsp;</span>
+                                </div>
+                                <div class="auto">
+                                    <a href="#" onclick="read(5)">中国科学院生命和信息领域重点实验室前沿交叉学术研讨会在深圳召开
+                                </div>
+                            </li>
+                        </form>
+                        <form method="post" action="" name="form_data" id="form_data">
+                            <li class="tbody">
+                                <div class="pull-left">
+                                    <label class="inline pull-left col-3">
+                                        <input class="ace" type="checkbox" name="id[]" value="6"/>
+                                        <span class="lbl"></span></label>
+                                </div>
+                                <div class="pull-right">
+                                    <span class="col-8"> 正常&nbsp;</span>
+                                    <span class="col-12"> 系统管理员&nbsp;</span>
+                                    <span class="col-12"> 中国科学院&nbsp;</span>
+                                    <span class="col-12"> 2018-3-16 </span>
+                                    <span class="col-12"> &nbsp;</span>
+                                </div>
+                                <div class="auto">
+                                    <a href="#" onclick="read(6)">2017年信息领域国家重点实验室评估结果
+                                </div>
+                            </li>
+                        </form>
+                        <div class="pagination">
+                            {$page}
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid zky_footer" style="margin-top: 32px">
+    <div class="row footer-container">
+        <div class="text-center footer-txt">
+            © 1996 - 2018 中国科学院 版权所有 | <a href="http://www.miitbeian.gov.cn" target="_blank">粤ICP备17007740号-2</a> | 联系我们
+            | 留言板
+        </div>
+        <div class="text-center footer-txt">地址：北京市三里河路52号 邮编：100864</div>
+    </div>
+</div>
+</body>
+
+<!-- Mainly scripts -->
+
+<script src="/vendor/bootstrap.min.js"></script>
+<script src="/vendor/jquery.webui-popover.min.js"></script>
+<script src="/vendor/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="/vendor/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="/vendor/inspinia.js"></script>
+<script src="/vendor/common.js"></script>
+<script src="/vendor/plugins/pace/pace.min.js"></script>
+<script src="/vendor/plugins/jsTree3/jstree.min.js"></script>
+<script src="/js/index.js"></script>
+
+
+<script src="/vendor/plugins/toastr/toastr.min.js"></script>
+<script src="/vendor/plugins/gritter/jquery.gritter.min.js"></script>
+<script src="/vendor/plugins/bootbox/bootbox.min.js"></script>
+
+
+<script src="/vendor/plugins/date-time/moment-with-locales.js"></script>
+<script src="/vendor/plugins/date-time/bootstrap-datetimepicker.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.input-date').datetimepicker({
+            format: 'YYYY-MM-DD',
+            locale: 'zh-cn',
+            ignoreReadonly: true
+        });
+        $('.input-year').datetimepicker({
+            format: 'YYYY',
+            locale: 'zh-cn',
+            ignoreReadonly: true
+        });
+
+        $(".input-daterange input").datetimepicker({
+            format: "YYYY-MM-DD",
+            locale: 'zh-cn',
+            showTodayButton: true,
+            showClose: true,
+            ignoreReadonly: true
+        });
+
+        $("#start_date").on("dp.change", function (e) {
+            if ($("#end_date").length > 0) {
+                $('#end_date').data("DateTimePicker").minDate(e.date);
+            }
+        });
+
+        $("#end_date").on("dp.change", function (e) {
+            if ($("#start_date").length > 0) {
+                $('#start_date').data("DateTimePicker").maxDate(e.date);
+            }
+        });
+
+        $(".input-date-time").datetimepicker({
+            format: 'YYYY-MM-DD HH:mm',
+            locale: 'zh-cn',
+            sideBySide: true,
+            showTodayButton: true,
+            showClose: true,
+            ignoreReadonly: true,
+            widgetPositioning: {
+                horizontal: 'auto',
+                vertical: 'bottom'
+            },
+        });
+
+    });
+</script>
+<script type="text/javascript">
+    function add() {
+        window.open("/news/add", "_self");
+    }
+
+    function read(id) {
+        window.open("/read&_id=" + id, "_self");
+    }
+
+    function approve(id, status) {
+        var msg = "确定要 拒绝 该条新闻吗？";
+        if (status == 1)
+            msg = "确定要 审核通过 该条新闻吗？";
+
+        ui_confirm(msg, function () {
+            var vars = "id=" + id + "&status=" + status;
+            sendAjax("/approve", vars, function (data) {
+                if (data.status) {
+                    ui_alert(data.status.message, function () {
+                        location.reload(true);
+                    });
+                }
+            });
+        });
+    }
+
+    function del() {
+        count = $("li.tbody :checked").length;
+        if (count == 0) {
+            ui_error("请选择要删除的数据");
+            return false;
+        }
+        ui_confirm('确定要删除吗?', function () {
+            var vars = $("#form_data").serialize();
+            console.log(vars);
+            sendAjax("/del", vars, function (data) {
+                if (data.status) {
+                    ui_alert(data.status.message, function () {
+                        location.reload(true);
+                    });
+                }
+            });
+        });
+    }
+</script>
+
+</html>
+
