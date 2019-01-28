@@ -1,4 +1,4 @@
-package com.bj.zzq.utils;
+package com.bj.zzq.core;
 
 import java.io.Serializable;
 
@@ -11,6 +11,7 @@ public class UserInfo implements Serializable {
     private String username;
     private String password;
     private String email;
+    private String cnbh;
 
     public String getUsername() {
         return username;
@@ -36,12 +37,12 @@ public class UserInfo implements Serializable {
         this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "UserInfo{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public String getCnbh() {
+        return cnbh;
     }
+
+    public void setCnbh(String cnbh) {
+        this.cnbh = cnbh;
+    }
+
 }

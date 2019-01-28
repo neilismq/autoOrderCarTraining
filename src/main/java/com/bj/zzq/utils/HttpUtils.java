@@ -1,6 +1,7 @@
 package com.bj.zzq.utils;
 
-import com.bj.zzq.Main;
+import com.bj.zzq.core.Order;
+import com.bj.zzq.core.OrderInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
@@ -26,8 +27,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +50,7 @@ public class HttpUtils {
     public static String orderUrl = "http://longquanapi.xuechebu.com/KM2/ClYyAddByMutil";
 
     //请求工具
-    public static String doHttp(String method, String url, HashMap<String, String> headers, HashMap<String, String> params) throws URISyntaxException, IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    public static String doHttp(String method, String url, HashMap<String, String> headers, HashMap<String, String> params, OrderInfo orderInfo) throws URISyntaxException, IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         CloseableHttpClient httpclient = null;
         if (url.startsWith("https")) {
             SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
@@ -123,7 +122,7 @@ public class HttpUtils {
         if (result.contains("身份认证失败") || result.contains("重新登录")) {
             //每个请求都有可能返回 "身份认证失败"
             cookie = "";
-            Main.login();
+            Order.login(orderInfo);
         }
         // 如果是登录请求，获取cookie
         if (loginUrl.equals(url) || longquanjiaxiaoLoginUrl.equals(url)) {

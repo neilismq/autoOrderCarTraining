@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -39,5 +40,56 @@ public class DateUtils {
 
     public static String timeToStr(Date dateStr) {
         return format_time.format(dateStr);
+    }
+
+    /**
+     * 数字转大写
+     *
+     * @param numInWeek
+     * @return
+     */
+    public static String numWeekToUpper(int numInWeek) {
+        String numInWeekUpper = "";
+        switch (numInWeek) {
+            case 1: {
+                numInWeekUpper = "日";
+                break;
+            }
+            case 2: {
+                numInWeekUpper = "一";
+                break;
+            }
+            case 3: {
+                numInWeekUpper = "二";
+                break;
+            }
+            case 4: {
+                numInWeekUpper = "三";
+                break;
+            }
+            case 5: {
+                numInWeekUpper = "四";
+                break;
+            }
+            case 6: {
+                numInWeekUpper = "五";
+                break;
+            }
+            case 7: {
+                numInWeekUpper = "六";
+                break;
+            }
+            default:
+                numInWeekUpper = "转换出错，请输入正确的星期数字(1-7)";
+        }
+        return numInWeekUpper;
+    }
+
+    public static String dateToWeek(String date) {
+        Date date1 = strToDate(date);
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(date1);
+        int numInWeek = instance.get(Calendar.DAY_OF_WEEK);
+        return numWeekToUpper(numInWeek);
     }
 }
