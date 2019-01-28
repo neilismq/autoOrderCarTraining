@@ -70,7 +70,7 @@ public class Main {
 
     /**
      * @param orderDate 约车时间 yyyy-MM-dd
-     * @return 开火时间
+     * @return 开火时间(捡漏开始时间)
      */
     private static Date generateFireTimeByOrderDate(String orderDate) {
         // 77 17 27 37 47 57 67
@@ -90,30 +90,6 @@ public class Main {
         return fireTime;
     }
 
-    private static Trigger getFireTrigger(UserInfo userInfo, String orderDate) {
-        Date fireTime = generateFireTimeByOrderDate(orderDate);
-        SimpleTrigger fireTrigger = null;
-        if (fireTime != null) {
-            fireTrigger = TriggerBuilder.newTrigger().withIdentity("fire_trigger_" + userInfo.getUsername(), "fire_group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(10).withIntervalInMilliseconds(1)).startNow().build();
-        }
-        return fireTrigger;
-    }
-
-    private static Trigger getPickTrigger(UserInfo userInfo, String orderDate) {
-        Date pickEndTime = getPickEndTime(orderDate);
-        Date startTime = generateFireTimeByOrderDate(orderDate);
-        Trigger pickTrigger = TriggerBuilder.newTrigger().withIdentity("pick_trigger_" + userInfo.getUsername(), "pick_group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(10).withIntervalInMilliseconds(1)).startNow().build();
-
-        if (startTime != null) {
-
-        }
-
-        if (fireTime != null) {
-            fireTrigger = TriggerBuilder.newTrigger().withIdentity("trigger_" + userInfo.getUsername(), "group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(10).withIntervalInMilliseconds(1)).startNow().build();
-        }
-        return fireTrigger;
-    }
-
     /**
      * 捡漏结束时间（默认前一天晚上10点结束）
      *
@@ -131,11 +107,40 @@ public class Main {
         return calendar.getTime();
     }
 
-    private void doJob(UserInfo userInfo, String orderDate) {
+    private static Trigger getFireTrigger(UserInfo userInfo, String orderDate) {
+        Date fireTime = generateFireTimeByOrderDate(orderDate);
+        SimpleTrigger fireTrigger = null;
+        if (fireTime != null) {
+            fireTrigger = TriggerBuilder.newTrigger().withIdentity("fire_trigger_" + userInfo.getUsername(), "group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(100).withIntervalInMilliseconds(1)).startNow().withPriority(5).build();
+        }
+        return fireTrigger;
+    }
+
+    private static Trigger getPickTrigger(UserInfo userInfo, String orderDate) {
+        Date pickEndTime = getPickEndTime(orderDate);
+        Date startTime = generateFireTimeByOrderDate(orderDate);
+        TriggerBuilder<SimpleTrigger> builder = TriggerBuilder.newTrigger().withIdentity("pick_trigger_" + userInfo.getUsername(), "group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().repeatForever().withIntervalInMinutes(3)).withPriority(10).endAt(pickEndTime);
+        if (startTime == null) {
+            builder.startNow();
+        } else {
+            builder.startAt(startTime);
+        }
+        return builder.build();
+    }
 
 
+    private void doJob(UserInfo userInfo, String orderDate) throws SchedulerException {
         JobDetail orderJob = getOrderJob(userInfo, orderDate);
-
+        Trigger fireTrigger = getFireTrigger(userInfo, orderDate);
+        Trigger pickTrigger = getPickTrigger(userInfo, orderDate);
+        TreeSet<Trigger> triggers = new TreeSet<>();
+        if (fireTrigger != null) {
+            triggers.add(fireTrigger);
+        }
+        if (pickTrigger!=null){
+            triggers.add(pickTrigger);
+        }
+        scheduler.scheduleJob(orderJob,triggers,true);
     }
 
     private static JobDetail getOrderJob(UserInfo userInfo, String orderDate) {
