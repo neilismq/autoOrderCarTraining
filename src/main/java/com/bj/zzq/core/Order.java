@@ -8,7 +8,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -26,19 +25,9 @@ import java.util.TreeSet;
  * @Description:
  */
 public class Order {
-    private static Scheduler scheduler;
     private static Logger log = Logger.getLogger(Order.class);
 
-    public static void init() {
-        try {
-            scheduler = StdSchedulerFactory.getDefaultScheduler();
-            scheduler.start();
-        } catch (SchedulerException e) {
-            log.error("初始化错误！", e);
-        }
-    }
-
-    public static void addOrderJobSchedule(OrderInfo orderInfo) throws SchedulerException {
+    public static void addOrderJobSchedule(Scheduler scheduler, OrderInfo orderInfo) throws SchedulerException {
         JobDetail orderJob = getOrderJob(orderInfo);
         Trigger fireTrigger = getFireTrigger(orderInfo);
         Trigger pickTrigger = getPickTrigger(orderInfo);
@@ -96,7 +85,7 @@ public class Order {
         Date fireTime = generateFireTimeByOrderDate(orderInfo.getOrderDate());
         SimpleTrigger fireTrigger = null;
         if (fireTime != null) {
-            fireTrigger = TriggerBuilder.newTrigger().withIdentity("fire_trigger_" + orderInfo.getUsername(), "group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(100).withIntervalInMilliseconds(1)).startAt(fireTime).withPriority(5).build();
+            fireTrigger = TriggerBuilder.newTrigger().withIdentity("fire_trigger_" + orderInfo.getUsername() + "_" + orderInfo.getOrderDate(), "group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(100).withIntervalInMilliseconds(1)).startAt(fireTime).withPriority(10).build();
         }
         return fireTrigger;
     }
@@ -105,7 +94,7 @@ public class Order {
     private static Trigger getPickTrigger(OrderInfo orderInfo) {
         Date pickEndTime = getPickEndTime(orderInfo.getOrderDate());
         Date startTime = generateFireTimeByOrderDate(orderInfo.getOrderDate());
-        TriggerBuilder<SimpleTrigger> builder = TriggerBuilder.newTrigger().withIdentity("pick_trigger_" + orderInfo.getUsername(), "group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().repeatForever().withIntervalInMinutes(3)).withPriority(10).endAt(pickEndTime);
+        TriggerBuilder<SimpleTrigger> builder = TriggerBuilder.newTrigger().withIdentity("pick_trigger_" + orderInfo.getUsername() + "_" + orderInfo.getOrderDate(), "group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().repeatForever().withIntervalInMinutes(3)).withPriority(5).endAt(pickEndTime);
         if (startTime == null) {
             builder.startNow();
         } else {
@@ -115,7 +104,7 @@ public class Order {
     }
 
     private static JobDetail getOrderJob(OrderInfo orderInfo) {
-        JobDetail jobDetail = JobBuilder.newJob(OrderJob.class).withIdentity("job_" + orderInfo.getUsername(), "job_group").storeDurably(true).build();
+        JobDetail jobDetail = JobBuilder.newJob(OrderJob.class).withIdentity("job_" + orderInfo.getUsername() + "_" + orderInfo.getOrderDate(), "job_group").storeDurably(true).build();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         jobDataMap.put("orderInfo", orderInfo);
         return jobDetail;

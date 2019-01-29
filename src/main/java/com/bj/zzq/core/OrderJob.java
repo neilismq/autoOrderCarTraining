@@ -1,6 +1,5 @@
 package com.bj.zzq.core;
 
-import com.bj.zzq.Main;
 import org.apache.log4j.Logger;
 import org.quartz.*;
 

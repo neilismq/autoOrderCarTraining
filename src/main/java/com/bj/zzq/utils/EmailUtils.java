@@ -3,11 +3,8 @@ package com.bj.zzq.utils;
 import org.apache.log4j.Logger;
 
 import javax.mail.*;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.net.InetAddress;
-import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -22,7 +19,7 @@ public class EmailUtils {
     public static void sendEmail(String title, String content) {
         try {
             Properties properties = new Properties();
-            String emailReceiverAddr = ConfProperties.emailReceiverAddr;
+            String emailReceiverAddr = PropertiesLoader.emailReceiverAddr;
             String mailHost = "";
             if (emailReceiverAddr.endsWith("qq.com")) {
                 mailHost = "smtp.qq.com";
@@ -40,7 +37,7 @@ public class EmailUtils {
             //创建消息
             MimeMessage message = new MimeMessage(session);
             //发件人
-            message.setFrom(new InternetAddress(ConfProperties.emailSenderAddr));
+            message.setFrom(new InternetAddress(PropertiesLoader.emailSenderAddr));
             //收件人地址
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(emailReceiverAddr));
             //标题
@@ -51,7 +48,7 @@ public class EmailUtils {
             //根据session对象获取邮件传输对象Transport
             Transport transport = session.getTransport();
             //设置发件人的账户名和密码
-            transport.connect(ConfProperties.emailReceiverAddr, ConfProperties.emailSenderPasswordOrAuthorizatioCode);
+            transport.connect(PropertiesLoader.emailReceiverAddr, PropertiesLoader.emailSenderPasswordOrAuthorizatioCode);
             //发送邮件，并发送到所有收件人地址，message.getAllRecipients() 获取到的是在创建邮件对象时添加的所有收件人, 抄送人, 密送人
             transport.sendMessage(message, message.getAllRecipients());
             //关闭邮件连接

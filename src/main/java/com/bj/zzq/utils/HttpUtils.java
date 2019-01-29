@@ -109,8 +109,8 @@ public class HttpUtils {
         }
 
         //设置代理,方便查看请求
-        if (StringUtils.isNotBlank(ConfProperties.proxyIp) && StringUtils.isNotBlank(ConfProperties.proxyProtocol) && ConfProperties.proxyPort != null) {
-            HttpHost proxy = new HttpHost(ConfProperties.proxyIp, ConfProperties.proxyPort, ConfProperties.proxyProtocol);
+        if (StringUtils.isNotBlank(PropertiesLoader.proxyIp) && StringUtils.isNotBlank(PropertiesLoader.proxyProtocol) && PropertiesLoader.proxyPort != null) {
+            HttpHost proxy = new HttpHost(PropertiesLoader.proxyIp, PropertiesLoader.proxyPort, PropertiesLoader.proxyProtocol);
             RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
             httpRequestBase.setConfig(config);
         }

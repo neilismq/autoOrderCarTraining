@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class ConfProperties {
+public class PropertiesLoader {
     public static Properties properties;
     public static String username;
     public static String password;
@@ -23,7 +23,7 @@ public class ConfProperties {
 
     static {
         properties = new Properties();
-        InputStream inputStream = ConfProperties.class.getClassLoader().getResourceAsStream("application.properties");
+        InputStream inputStream = PropertiesLoader.class.getClassLoader().getResourceAsStream("application.properties");
         try {
             properties.load(inputStream);
         } catch (IOException e) {
