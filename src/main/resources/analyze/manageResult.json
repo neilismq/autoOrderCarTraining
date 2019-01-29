@@ -1,0 +1,70 @@
+{
+  "code": "200",
+  "message": "成功",
+  "body": [
+    {
+      "username": "111",
+      "password": "222",
+      "email": "11",
+      "cnbh": "111",
+      "orderDate": "2019-02-28",
+      "orderType": "58",
+      "jobName": "job_111_2019-02-28",
+      "jobGoup": "job_group",
+      "triggers": [
+        {
+          "name": "fire_trigger_111_2019-02-28",
+          "group": "group_order",
+          "startTime": "2019-02-22 07:00:00",
+          "endTime": "",
+          "priority": 5,
+          "repeatCount": 100,
+          "interval": 1,
+          "status": "NORMAL"
+        },
+        {
+          "name": "pick_trigger_111_2019-02-28",
+          "group": "group_order",
+          "startTime": "2019-02-22 07:00:00",
+          "endTime": "2019-02-27 22:00:00",
+          "priority": 10,
+          "repeatCount": -1,
+          "interval": 180000,
+          "status": "NORMAL"
+        }
+      ]
+    },
+    {
+      "username": "111",
+      "password": "222",
+      "email": "11",
+      "cnbh": "111",
+      "orderDate": "2019-03-13",
+      "orderType": "15",
+      "jobName": "job_111_2019-03-13",
+      "jobGoup": "job_group",
+      "triggers": [
+        {
+          "name": "fire_trigger_111_2019-03-13",
+          "group": "group_order",
+          "startTime": "2019-03-07 07:00:00",
+          "endTime": "",
+          "priority": 5,
+          "repeatCount": 100,
+          "interval": 1,
+          "status": "NORMAL"
+        },
+        {
+          "name": "pick_trigger_111_2019-03-13",
+          "group": "group_order",
+          "startTime": "2019-03-07 07:00:00",
+          "endTime": "2019-03-12 22:00:00",
+          "priority": 10,
+          "repeatCount": -1,
+          "interval": 180000,
+          "status": "NORMAL"
+        }
+      ]
+    }
+  ]
+}

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -81,13 +80,6 @@ public class OrderController {
         scheduler.standby();
         return CommonResponse.okInstance();
     }
-    //不允许用户停止schduler
-//    @ResponseBody
-//    @RequestMapping(value = "/shutdownSchdule", method = RequestMethod.POST)
-//    public CommonResponse shutdownSchdule() throws SchedulerException {
-//        scheduler.shutdown(true);
-//        return CommonResponse.okInstance();
-//    }
 
     @ResponseBody
     @RequestMapping(value = "/querySchdulerStatus", method = RequestMethod.POST)

@@ -1,5 +1,7 @@
 package com.bj.zzq.utils;
 
+
+import com.bj.zzq.core.OrderInfo;
 import org.apache.log4j.Logger;
 
 import javax.mail.*;
@@ -16,10 +18,10 @@ public class EmailUtils {
 
     private static Logger log = Logger.getLogger(EmailUtils.class);
 
-    public static void sendEmail(String title, String content) {
+    public static void sendEmail(String title, String content, OrderInfo orderInfo) {
         try {
             Properties properties = new Properties();
-            String emailReceiverAddr = PropertiesLoader.emailReceiverAddr;
+            String emailReceiverAddr = orderInfo.getEmail();
             String mailHost = "";
             if (emailReceiverAddr.endsWith("qq.com")) {
                 mailHost = "smtp.qq.com";

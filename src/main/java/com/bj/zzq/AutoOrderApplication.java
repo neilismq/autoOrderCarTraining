@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @Author: zhaozhiqiang
  * @Date: 2019/1/11
- * @Description: 只在早上七点抢
+ * @Description:
  */
 @SpringBootApplication
 public class AutoOrderApplication {
