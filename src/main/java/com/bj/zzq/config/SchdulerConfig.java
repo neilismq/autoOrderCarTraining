@@ -2,6 +2,7 @@ package com.bj.zzq.config;
 
 import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +19,14 @@ import java.util.Properties;
  */
 @Configuration
 public class SchdulerConfig {
+
+    @Autowired
+    private CarJobFactory carJobFactory;
+
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean() throws IOException {
         SchedulerFactoryBean factory = new SchedulerFactoryBean();
+        factory.setJobFactory(carJobFactory);
         factory.setQuartzProperties(quartzProperties());
         return factory;
     }

@@ -1,11 +1,11 @@
 package com.bj.zzq.controller;
 
-import com.bj.zzq.core.Order;
-import com.bj.zzq.core.OrderInfo;
-import com.bj.zzq.core.OrderResponse;
-import com.bj.zzq.core.TriggerInfo;
+import com.bj.zzq.core.*;
+import com.bj.zzq.dao.OrderService;
 import com.bj.zzq.utils.CommonResponse;
 import com.bj.zzq.utils.DateUtils;
+import com.bj.zzq.utils.IdUtils;
+import com.sun.corba.se.spi.orb.ORBData;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @Author: zhaozhiqiang
@@ -31,13 +28,82 @@ public class OrderController {
     @Autowired
     private Scheduler scheduler;
 
+    @Autowired
+    private OrderService orderService;
+
     @ResponseBody
-    @RequestMapping(value = "/addJobs", method = RequestMethod.POST)
-    public CommonResponse addJobs(@RequestBody OrderInfo[] orderInfo) throws SchedulerException {
-        for (OrderInfo orderInfoItem : orderInfo) {
-            Order.addOrderJobSchedule(scheduler, orderInfoItem);
+    @RequestMapping(value = "/addOrder", method = RequestMethod.POST)
+    public CommonResponse addJobs(@RequestBody OrderInfo orderInfo) throws SchedulerException {
+        String orderDate = orderInfo.getOrderDate();
+        Date pickEndTime = Order.getPickEndTime(orderDate);
+        Date now = new Date();
+        if (now.after(pickEndTime)) {
+            CommonResponse response = CommonResponse.errorInstance();
+            response.setBody("抢号时间设置不对");
+            return response;
         }
+        OrderInfo orderInfo1 = orderService.selectOrderInfoUnique(orderInfo);
+        if (orderInfo1 != null) {
+            CommonResponse response = CommonResponse.errorInstance();
+            response.setBody("此订单已经存在！");
+            return response;
+        }
+        orderInfo.setId(IdUtils.uuid());
+        orderInfo.setCreate_time(new Date());
+        orderInfo.setStatus("0");// 0-没抢到，1-已抢到
+        orderService.insertOrderInfo(orderInfo);
+        Order.addOrderJobSchedule(scheduler, orderInfo);
         return CommonResponse.okInstance();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
+    public CommonResponse deleteOrder(@RequestBody String id) throws SchedulerException {
+        OrderInfo orderInfo = orderService.selectOrderbyId(id);
+        JobKey jobKey = new JobKey("job_" + orderInfo.getUsername() + "_" + orderInfo.getOrderDate(), "job_group");
+        deleteJobs(new JobKey[]{jobKey});
+        orderService.deleteOrderById(id);
+        return CommonResponse.okInstance();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/addUser", method = RequestMethod.POST)
+    public CommonResponse addUsers(@RequestBody UserInfo userInfo) {
+        UserInfo userInfo1 = orderService.selectUserByUsername(userInfo.getUsername());
+        if (userInfo1 != null) {
+            CommonResponse response = CommonResponse.errorInstance();
+            response.setBody("此用户已经存在！");
+            return response;
+        }
+        String uuid = IdUtils.uuid();
+        userInfo.setId(uuid);
+        orderService.insertUser(userInfo);
+        return CommonResponse.okInstance();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+    public CommonResponse deleteUser(@RequestBody String id) {
+        orderService.deleteUserById(id);
+        return CommonResponse.okInstance();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/selectUsers", method = RequestMethod.POST)
+    public CommonResponse selectAllUsers() {
+        List<UserInfo> userInfos = orderService.selectAllUsers();
+        CommonResponse response = CommonResponse.okInstance();
+        response.setBody(userInfos);
+        return response;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/selectOrdersByUser", method = RequestMethod.POST)
+    public CommonResponse selectOrderByUserId(@RequestBody String user_id) {
+        List<OrderInfo> orderInfos = orderService.selectOrderByUserId(user_id);
+        CommonResponse response = CommonResponse.okInstance();
+        response.setBody(orderInfos);
+        return response;
     }
 
     @ResponseBody

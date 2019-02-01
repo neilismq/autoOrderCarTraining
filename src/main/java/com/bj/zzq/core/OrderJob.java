@@ -1,7 +1,9 @@
 package com.bj.zzq.core;
 
+import com.bj.zzq.dao.OrderService;
 import org.apache.log4j.Logger;
 import org.quartz.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @Author: zhaozhiqiang
@@ -12,6 +14,8 @@ import org.quartz.*;
 @DisallowConcurrentExecution
 public class OrderJob implements Job {
     private static Logger log = Logger.getLogger(OrderJob.class);
+    @Autowired
+    private OrderService orderService;
 
     @Override
     public void execute(JobExecutionContext context) {
@@ -33,7 +37,7 @@ public class OrderJob implements Job {
         log.info("JobName:" + name + ",JobGroup:" + group + ",TriggerName:" + triggerName + ",triggerGroup:" + triggerGroupName + ",用户：" + username + ",抢号日期：" + orderDate + ",时间段：" + orderType + "的任务开始-------------------------------");
 
         try {
-            Order.orderTask(orderInfo, context);
+            Order.orderTask(orderInfo, context,orderService);
         } catch (Exception e) {
             log.error("抢票失败", e);
         }

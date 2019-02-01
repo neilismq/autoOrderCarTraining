@@ -1,6 +1,7 @@
 package com.bj.zzq.core;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @Author: zhaozhiqiang
@@ -8,10 +9,27 @@ import java.io.Serializable;
  * @Description:
  */
 public class UserInfo implements Serializable {
+    private String id;
     private String username;
     private String password;
     private String email;
     private String cnbh;
+    private Date create_time;
+
+    public Date getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(Date create_time) {
+        this.create_time = create_time;
+    }
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;

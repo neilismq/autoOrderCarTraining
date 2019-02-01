@@ -3,6 +3,7 @@ package com.bj.zzq.core;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bj.zzq.dao.OrderService;
 import com.bj.zzq.utils.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,7 +46,7 @@ public class Order {
      * @param orderDate
      * @return 开火时间(捡漏开始时间)
      */
-    private static Date generateFireTimeByOrderDate(String orderDate) {
+    public static Date generateFireTimeByOrderDate(String orderDate) {
         // 77 17 27 37 47 57 67
         Date date = DateUtils.strToDate(orderDate);
         Calendar calendar = Calendar.getInstance();
@@ -68,7 +69,7 @@ public class Order {
      *
      * @param orderDate
      */
-    private static Date getPickEndTime(String orderDate) {
+    public static Date getPickEndTime(String orderDate) {
         Date date = DateUtils.strToDate(orderDate);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -120,7 +121,7 @@ public class Order {
      * @throws KeyManagementException
      * @throws URISyntaxException
      */
-    public static void orderTask(OrderInfo orderInfo, JobExecutionContext context) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException, InterruptedException, SchedulerException {
+    public static void orderTask(OrderInfo orderInfo, JobExecutionContext context, OrderService orderService) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException, InterruptedException, SchedulerException {
 
         String xxzh = login(orderInfo);
         //获取用户信息
@@ -179,6 +180,7 @@ public class Order {
             int code = jsonObject5.getInteger("code");
             if (code == 0) {
                 log.info("抢到了！ " + orderDate + " " + orderType);
+                orderService.updateOrderStatusSuccess(orderInfo);
                 String finalXnsd = orderType;
                 new Thread(new Runnable() {
                     @Override

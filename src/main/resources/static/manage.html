@@ -2,9 +2,10 @@
 <head>
     <meta charset="UTF-8">
     <title>autoCar</title>
+    <script src="../js/jquery-3.3.1.js"></script>
 </head>
 <body>
-<div>
+<div style="display: none;">
     <div>
         <span>
             用户名:
@@ -45,7 +46,23 @@
             <option>晚上</option>
         </select>
     </div>
+</div>
+<div>
+    <span>
+        <input type="button" id="showUsers" value="显示所有用户">
+    </span>
+    <table id="users">
 
+    </table>
 </div>
 </body>
 </html>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#showUsers").click(function () {
+            $.post("/order/selectUsers", {}, function (data) {
+                alert(data)
+            });
+        });
+    });
+</script>
