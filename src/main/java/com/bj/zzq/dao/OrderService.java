@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import sun.rmi.log.LogInputStream;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: zhaozhiqiang
@@ -35,20 +33,23 @@ public class OrderService {
         return userInfos;
     }
 
-    public UserInfo selectUserByUsername(String username) {
+    public List<UserInfo> selectUserByUsername(String username) {
         String sql = "select * from car_user where username=?";
-        UserInfo userInfo = jdbcTemplate.queryForObject(sql, UserInfo.class, username);
+        BeanPropertyRowMapper<UserInfo> rowMapper = BeanPropertyRowMapper.newInstance(UserInfo.class);
+        List<UserInfo> userInfo = jdbcTemplate.query(sql, new Object[]{username}, rowMapper);
+        //UserInfo userInfo = jdbcTemplate.queryForObject(sql, UserInfo.class, username);
         return userInfo;
     }
 
     public void insertOrderInfo(OrderInfo orderInfo) {
         String sql = "insert car_orderinfo (id,user_id,order_date,time_slot,create_time,status) values (?,?,?,?,?,?)";
-        jdbcTemplate.update(sql, orderInfo.getId(), orderInfo.getUsername());
+        jdbcTemplate.update(sql, orderInfo.getId(), orderInfo.getUser_id(), orderInfo.getOrderDate(), orderInfo.getOrderType(), orderInfo.getCreate_time(), orderInfo.getStatus());
     }
 
-    public OrderInfo selectOrderInfoUnique(OrderInfo orderInfo) {
-        String sql = "select * from car_orderinfo where user_id and order_date=? and time_slot=?";
-        return jdbcTemplate.queryForObject(sql, OrderInfo.class, orderInfo.getUser_id(), orderInfo.getOrderType());
+    public List<OrderInfo> selectOrderInfoUnique(OrderInfo orderInfo) {
+        String sql = "select * from car_orderinfo where user_id =? and order_date=? and time_slot=?";
+        BeanPropertyRowMapper<OrderInfo> rowMapper = BeanPropertyRowMapper.newInstance(OrderInfo.class);
+        return jdbcTemplate.query(sql, new Object[]{orderInfo.getUser_id(), orderInfo.getOrderDate(), orderInfo.getOrderType()}, rowMapper);
     }
 
     public OrderInfo selectOrderbyId(String id) {

@@ -42,8 +42,8 @@ public class OrderController {
             response.setBody("抢号时间设置不对");
             return response;
         }
-        OrderInfo orderInfo1 = orderService.selectOrderInfoUnique(orderInfo);
-        if (orderInfo1 != null) {
+        List<OrderInfo> orderInfo1 = orderService.selectOrderInfoUnique(orderInfo);
+        if (orderInfo1 != null && orderInfo1.size() > 0) {
             CommonResponse response = CommonResponse.errorInstance();
             response.setBody("此订单已经存在！");
             return response;
@@ -69,8 +69,8 @@ public class OrderController {
     @ResponseBody
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
     public CommonResponse addUsers(@RequestBody UserInfo userInfo) {
-        UserInfo userInfo1 = orderService.selectUserByUsername(userInfo.getUsername());
-        if (userInfo1 != null) {
+        List<UserInfo> userInfo1 = orderService.selectUserByUsername(userInfo.getUsername());
+        if (userInfo1 != null && userInfo1.size() > 0) {
             CommonResponse response = CommonResponse.errorInstance();
             response.setBody("此用户已经存在！");
             return response;
