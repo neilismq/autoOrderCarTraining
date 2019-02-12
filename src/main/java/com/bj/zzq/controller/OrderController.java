@@ -39,14 +39,22 @@ public class OrderController {
         Date now = new Date();
         if (now.after(pickEndTime)) {
             CommonResponse response = CommonResponse.errorInstance();
-            response.setBody("抢号时间设置不对");
+            response.setMessage("抢号时间设置不对");
             return response;
         }
         List<OrderInfo> orderInfo1 = orderService.selectOrderInfoUnique(orderInfo);
         if (orderInfo1 != null && orderInfo1.size() > 0) {
             CommonResponse response = CommonResponse.errorInstance();
-            response.setBody("此订单已经存在！");
+            response.setMessage("此订单已经存在！");
             return response;
+        }
+        List<UserInfo> userInfos = orderService.selectUserByUserId(orderInfo);
+        if (userInfos != null && userInfos.size() > 0) {
+            UserInfo userInfo = userInfos.get(0);
+            orderInfo.setUsername(userInfo.getUsername());
+            orderInfo.setPassword(userInfo.getPassword());
+            orderInfo.setCnbh(userInfo.getCnbh());
+            orderInfo.setEmail(userInfo.getEmail());
         }
         orderInfo.setId(IdUtils.uuid());
         orderInfo.setCreate_time(new Date());

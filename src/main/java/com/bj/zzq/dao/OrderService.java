@@ -77,4 +77,10 @@ public class OrderService {
         String sql = "select * from car_orderinfo where user_id=?";
         return jdbcTemplate.queryForList(sql, OrderInfo.class, user_id);
     }
+
+    public List<UserInfo> selectUserByUserId(OrderInfo orderInfo) {
+        String sql = "select * from car_user where id=?";
+        BeanPropertyRowMapper<UserInfo> rowMapper = BeanPropertyRowMapper.newInstance(UserInfo.class);
+        return jdbcTemplate.query(sql, new Object[]{orderInfo.getUser_id()}, rowMapper);
+    }
 }

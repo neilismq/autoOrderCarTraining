@@ -124,9 +124,9 @@
             </td>
             <td>
                 <select id="timeSlot">
-                    <option value="1">上午</option>
-                    <option value="2">下午</option>
-                    <option value="3">晚上</option>
+                    <option value="812">上午</option>
+                    <option value="15">下午</option>
+                    <option value="58">晚上</option>
                 </select>
             </td>
         </tr>
@@ -147,11 +147,16 @@
                     var $tbody = $("#users > tbody");
                     $tbody.empty();
                     for (var i = 0; i < users.length; i++) {
-                        var child = $("<tr id='" + users[i].id + "'><td>" + users[i].username + "</td><td>" + users[i].password + "</td><td>" + users[i].email + "</td><td>" + users[i].cnbh + "</td><td>" + formatDate(users[i].create_time) + "</td><td><input type='button' value='约车' onclick='showDialog(" + users[i].id + ")'></td></tr>")
+                        var child = $("<tr id='" + users[i].id + "'><td>" + users[i].username + "</td><td>" + users[i].password + "</td><td>" + users[i].email + "</td><td>" + users[i].cnbh + "</td><td>" + formatDate(users[i].create_time) + "</td><td><input type='button' value='约车'></td></tr>")
                         $tbody.append(child);
                     }
                     $tbody.parent().removeAttr("style");
                     $("#addUserTable").attr("style", "display:none");
+                    $("#users > tbody input ").on("click", function () {
+                        $("#light").css("display", "block");
+                        $("#fade").css("display", "block");
+                        $("#userId").val($(this).parent().parent().attr("id"));
+                    })
                 }
             });
         });
