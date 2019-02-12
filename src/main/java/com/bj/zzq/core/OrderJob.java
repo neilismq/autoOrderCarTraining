@@ -31,7 +31,7 @@ public class OrderJob implements Job {
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         OrderInfo orderInfo = (OrderInfo) jobDataMap.get("orderInfo");
         String username = orderInfo.getUsername();
-        String orderType = orderInfo.getOrderType();
+        String orderType = orderInfo.getTimeSlot();
         String orderDate = orderInfo.getOrderDate();
 
         log.info("JobName:" + name + ",JobGroup:" + group + ",TriggerName:" + triggerName + ",triggerGroup:" + triggerGroupName + ",用户：" + username + ",抢号日期：" + orderDate + ",时间段：" + orderType + "的任务开始-------------------------------");

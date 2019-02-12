@@ -107,8 +107,8 @@ public class OrderController {
 
     @ResponseBody
     @RequestMapping(value = "/selectOrdersByUser", method = RequestMethod.POST)
-    public CommonResponse selectOrderByUserId(@RequestBody String user_id) {
-        List<OrderInfo> orderInfos = orderService.selectOrderByUserId(user_id);
+    public CommonResponse selectOrderByUserId(@RequestBody OrderInfo orderInfo) {
+        List<OrderInfo> orderInfos = orderService.selectOrderByUserId(orderInfo.getUser_id());
         CommonResponse response = CommonResponse.okInstance();
         response.setBody(orderInfos);
         return response;
@@ -189,7 +189,7 @@ public class OrderController {
             orderResponse.setJobName(jobKey.getName());
             orderResponse.setJobGoup(jobKey.getGroup());
             orderResponse.setOrderDate(orderInfo.getOrderDate());
-            orderResponse.setOrderType(orderInfo.getOrderType());
+            orderResponse.setTimeSlot(orderInfo.getTimeSlot());
             orderResponse.setCnbh(orderInfo.getCnbh());
             orderResponse.setEmail(orderInfo.getEmail());
             ArrayList<TriggerInfo> triggerInfos = new ArrayList<>();
@@ -229,7 +229,7 @@ public class OrderController {
         info.setEmail("11");
         info.setCnbh("111");
         info.setOrderDate("111");
-        info.setOrderType("15");
+        info.setTimeSlot("15");
         infos[0] = info;
         infos[1] = info;
         response.setBody(infos);

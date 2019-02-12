@@ -43,13 +43,13 @@ public class OrderService {
 
     public void insertOrderInfo(OrderInfo orderInfo) {
         String sql = "insert car_orderinfo (id,user_id,order_date,time_slot,create_time,status) values (?,?,?,?,?,?)";
-        jdbcTemplate.update(sql, orderInfo.getId(), orderInfo.getUser_id(), orderInfo.getOrderDate(), orderInfo.getOrderType(), orderInfo.getCreate_time(), orderInfo.getStatus());
+        jdbcTemplate.update(sql, orderInfo.getId(), orderInfo.getUser_id(), orderInfo.getOrderDate(), orderInfo.getTimeSlot(), orderInfo.getCreate_time(), orderInfo.getStatus());
     }
 
     public List<OrderInfo> selectOrderInfoUnique(OrderInfo orderInfo) {
         String sql = "select * from car_orderinfo where user_id =? and order_date=? and time_slot=?";
         BeanPropertyRowMapper<OrderInfo> rowMapper = BeanPropertyRowMapper.newInstance(OrderInfo.class);
-        return jdbcTemplate.query(sql, new Object[]{orderInfo.getUser_id(), orderInfo.getOrderDate(), orderInfo.getOrderType()}, rowMapper);
+        return jdbcTemplate.query(sql, new Object[]{orderInfo.getUser_id(), orderInfo.getOrderDate(), orderInfo.getTimeSlot()}, rowMapper);
     }
 
     public OrderInfo selectOrderbyId(String id) {
@@ -75,7 +75,8 @@ public class OrderService {
 
     public List<OrderInfo> selectOrderByUserId(String user_id) {
         String sql = "select * from car_orderinfo where user_id=?";
-        return jdbcTemplate.queryForList(sql, OrderInfo.class, user_id);
+        BeanPropertyRowMapper<OrderInfo> rowMapper = BeanPropertyRowMapper.newInstance(OrderInfo.class);
+        return jdbcTemplate.query(sql, new Object[]{user_id}, rowMapper);
     }
 
     public List<UserInfo> selectUserByUserId(OrderInfo orderInfo) {

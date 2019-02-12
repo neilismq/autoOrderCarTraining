@@ -105,7 +105,7 @@
     <input type="button"
            onclick="order()" value="预约"/>
     <input type="button"
-           onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'; $('#userId').val('');"
+           onclick="clodePopWindow();"
            value="关闭"/>
 
     <table>
@@ -132,14 +132,29 @@
         </tr>
     </table>
 </div>
+<div id="light2" class="white_content">
+    <input type="button"
+           onclick="clodePopWindow2();"
+           value="关闭"/>
+
+    <table>
+        <thead>
+        <tr>
+            <td>预约日期</td>
+            <td>时间段</td>
+            <td>状态</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
 <div id="fade" class="black_overlay"></div>
 </body>
 </html>
 <script type="text/javascript">
     $(document).ready(function () {
-        $.ajaxSetup({
-            dataType: "json"
-        });
         $("#showUsers").click(function () {
             $.post("/order/selectUsers", {}, function (data) {
                 if (data.code == 200) {
@@ -156,7 +171,22 @@
                         $("#light").css("display", "block");
                         $("#fade").css("display", "block");
                         $("#userId").val($(this).parent().parent().attr("id"));
-                    })
+                    });
+                    $("#users > tbody tr ").on("dblclick", function () {
+                        $("#light2").css("display", "block");
+                        $("#fade").css("display", "block");
+                        var params = {
+                            user_id: $(this).attr("id")
+                        };
+                        sendAjax("/order/selectOrdersByUser", JSON.stringify(params), function (data2) {
+                            var $orders = data2.body;
+                            var $tbody = $("#light2 table tbody");
+                            $.each($orders, function (i, val) {
+                                var $tr = $("<tr><td>" + val.orderDate + "</td><td>" + val.timeSlot + "</td><td>" + val.status + "</td></tr>")
+                                $tbody.append($tr);
+                            });
+                        })
+                    });
                 }
             });
         });
@@ -211,6 +241,21 @@
         };
         sendAjax("/order/addOrder", JSON.stringify(params), function (data) {
             alert(data.message);
+            if (data.code == 200) {
+                clodePopWindow();
+            }
         });
+    }
+
+    function clodePopWindow() {
+        document.getElementById('light').style.display = 'none';
+        document.getElementById('fade').style.display = 'none';
+        $('#userId').val('');
+    }
+
+    function clodePopWindow2() {
+        document.getElementById('light2').style.display = 'none';
+        document.getElementById('fade').style.display = 'none';
+        $('#userId').val('');
     }
 </script>

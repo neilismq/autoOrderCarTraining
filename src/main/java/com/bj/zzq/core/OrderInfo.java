@@ -5,7 +5,7 @@ import org.omg.CORBA.PRIVATE_MEMBER;
 
 public class OrderInfo extends UserInfo {
     private String orderDate;
-    private String orderType;
+    private String timeSlot;
     private String user_id;
     private String status;
 
@@ -33,12 +33,11 @@ public class OrderInfo extends UserInfo {
         this.orderDate = orderDate;
     }
 
-    public String getOrderType() {
-        return orderType;
+    public String getTimeSlot() {
+        return timeSlot;
     }
 
-    public void setOrderType(String orderType) {
-        this.orderType = orderType;
+    public void setTimeSlot(String timeSlot) {
+        this.timeSlot = timeSlot;
     }
-
 }

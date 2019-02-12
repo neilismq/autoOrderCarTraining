@@ -126,7 +126,7 @@ public class Order {
         String xxzh = login(orderInfo);
         //获取用户信息
         String cnbh = orderInfo.getCnbh();
-        String orderType = orderInfo.getOrderType();
+        String orderType = orderInfo.getTimeSlot();
         String orderDate = orderInfo.getOrderDate();
         if (StringUtils.isBlank(cnbh)) {
             //获取cnbh
