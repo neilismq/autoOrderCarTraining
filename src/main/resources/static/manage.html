@@ -178,11 +178,12 @@
                         var params = {
                             user_id: $(this).attr("id")
                         };
+                        var $tbody = $("#light2 table tbody");
+                        $tbody.empty();
                         sendAjax("/order/selectOrdersByUser", JSON.stringify(params), function (data2) {
                             var $orders = data2.body;
-                            var $tbody = $("#light2 table tbody");
                             $.each($orders, function (i, val) {
-                                var $tr = $("<tr><td>" + val.orderDate + "</td><td>" + val.timeSlot + "</td><td>" + val.status + "</td></tr>")
+                                var $tr = $("<tr><td>" + val.orderDate + "</td><td>" + val.timeSlot + "</td><td>" + (val.status == 0 ? '未抢到' : '已抢到') + "</td></tr>")
                                 $tbody.append($tr);
                             });
                         })
@@ -237,7 +238,7 @@
         var params = {
             user_id: $("#userId").val(),
             orderDate: $("#date").val(),
-            orderType: $("#timeSlot").val()
+            timeSlot: $("#timeSlot").val()
         };
         sendAjax("/order/addOrder", JSON.stringify(params), function (data) {
             alert(data.message);

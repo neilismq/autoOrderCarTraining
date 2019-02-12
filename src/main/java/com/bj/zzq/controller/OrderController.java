@@ -187,7 +187,7 @@ public class OrderController {
             orderResponse.setUsername(orderInfo.getUsername());
             orderResponse.setPassword(orderInfo.getPassword());
             orderResponse.setJobName(jobKey.getName());
-            orderResponse.setJobGoup(jobKey.getGroup());
+            orderResponse.setJobGroup(jobKey.getGroup());
             orderResponse.setOrderDate(orderInfo.getOrderDate());
             orderResponse.setTimeSlot(orderInfo.getTimeSlot());
             orderResponse.setCnbh(orderInfo.getCnbh());

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class OrderResponse extends OrderInfo {
     private String jobName;
-    private String jobGoup;
+    private String jobGroup;
     private List<TriggerInfo> triggers;
 
     public String getJobName() {
@@ -21,12 +21,12 @@ public class OrderResponse extends OrderInfo {
         this.jobName = jobName;
     }
 
-    public String getJobGoup() {
-        return jobGoup;
+    public String getJobGroup() {
+        return jobGroup;
     }
 
-    public void setJobGoup(String jobGoup) {
-        this.jobGoup = jobGoup;
+    public void setJobGroup(String jobGroup) {
+        this.jobGroup = jobGroup;
     }
 
     public List<TriggerInfo> getTriggers() {

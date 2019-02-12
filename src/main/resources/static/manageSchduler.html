@@ -1,0 +1,68 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="../js/jquery-3.3.1.js"></script>
+</head>
+<body>
+<div>
+    <input type="button" value="查询正在运行的任务" id="showTasksBtn">
+    <table id="showTasks">
+        <thead>
+        <tr>
+            <td>
+                jobName
+            </td>
+            <td>
+                jobGroup
+            </td>
+            <td>
+                用户名
+            </td>
+            <td>
+                密码
+            </td>
+            <td>
+                邮箱
+            </td>
+            <td>
+                教练车号
+            </td>
+            <td>
+                预约日期
+            </td>
+            <td>
+                时间段
+            </td>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#showTasksBtn").on("click", function () {
+            sendAjax("/order/queryJobsInfo", {}, function (data) {
+                var body = data.body;
+                var tbody = $("#showTasks tbody");
+                $.each(body, function (i, val) {
+                    var tr = $("<tr><td>" + val.jobName + "</td><td>" + val.jobGroup + "</td><td>" + val.username + "</td><td>" + val.password +
+                        "</td><td>" + val.email + "</td><td>" + val.cnbh + "</td><td>" + val.orderDate + "</td><td>" + val.timeSlot + "</td></tr>")
+                    tbody.append(tr);
+                })
+            })
+        });
+    });
+
+    function sendAjax(url, vars, callback) {
+        return $.ajax({
+            type: "POST",
+            url: url,
+            data: vars,
+            dataType: "json",
+            contentType: "application/json",
+            success: callback
+        });
+    }
+</script>
