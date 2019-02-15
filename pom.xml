@@ -24,97 +24,35 @@
         </dependencies>
     </dependencyManagement>
     <build>
-        <!--<plugins>-->
-        <!--<plugin>-->
-        <!--<groupId>org.apache.maven.plugins</groupId>-->
-        <!--<artifactId>maven-compiler-plugin</artifactId>-->
-        <!--<version>3.3</version>-->
-        <!--<configuration>-->
-        <!--<source>8</source>-->
-        <!--<target>8</target>-->
-        <!--</configuration>-->
-        <!--</plugin>-->
 
-        <!--<plugin>-->
-        <!--<groupId>org.apache.maven.plugins</groupId>-->
-        <!--<artifactId>maven-shade-plugin</artifactId>-->
-        <!--<version>3.1.0</version>-->
-        <!--<executions>-->
-        <!--<execution>-->
-        <!--<phase>package</phase>-->
-        <!--<goals>-->
-        <!--<goal>shade</goal>-->
-        <!--</goals>-->
-        <!--<configuration>-->
-        <!--<finalName>autoCar</finalName>-->
-        <!--<transformers>-->
-        <!--<transformer-->
-        <!--implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
-        <!--<mainClass>com.bj.zzq.AutoOrderApplication</mainClass>-->
-        <!--</transformer>-->
-        <!--<transformer-->
-        <!--implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">-->
-        <!--<resource>META-INF/spring.handlers</resource>-->
-        <!--</transformer>-->
-        <!--<transformer-->
-        <!--implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">-->
-        <!--<resource>META-INF/spring.schemas</resource>-->
-        <!--</transformer>-->
-        <!--<transformer-->
-        <!--implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">-->
-        <!--<resource>META-INF/spring.factories</resource>-->
-        <!--</transformer>-->
-
-        <!--</transformers>-->
-        <!--</configuration>-->
-        <!--</execution>-->
-        <!--</executions>-->
-        <!--</plugin>-->
-        <!--&lt;!&ndash; 打jar包工具插件 &ndash;&gt;-->
-        <!--<plugin>-->
-        <!--<artifactId>maven-assembly-plugin</artifactId>-->
-        <!--<version>2.4</version>-->
-        <!--<configuration>-->
-        <!--<descriptorRefs>-->
-        <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
-        <!--</descriptorRefs>-->
-        <!--<archive>-->
-        <!--<manifest>-->
-        <!--<mainClass>com.bj.zzq.AutoOrderApplication</mainClass>-->
-        <!--</manifest>-->
-        <!--</archive>-->
-
-        <!--</configuration>-->
-        <!--<executions>-->
-        <!--<execution>-->
-        <!--<id>make-assembly</id>-->
-        <!--<phase>package</phase>-->
-        <!--<goals>-->
-        <!--<goal>single</goal>-->
-        <!--</goals>-->
-        <!--</execution>-->
-        <!--</executions>-->
-        <!--</plugin>-->
-        <!--</plugins>-->
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
             <!-- 打JAR包 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <!-- 不打包资源文件（配置文件和依赖包分开） -->
-                    <!--<excludes>-->
-                        <!--<exclude>*.**</exclude>-->
-                        <!--<exclude>*/*.xml</exclude>-->
-                    <!--</excludes>-->
+                    <excludes>
+                        <exclude>*.properties</exclude>
+                        <exclude>*.xml</exclude>
+                    </excludes>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <!-- MANIFEST.MF 中 Class-Path 加入前缀 -->
                             <classpathPrefix>lib/</classpathPrefix>
                             <!-- jar包不包含唯一版本标识 -->
-                            <useUniqueVersions>false</useUniqueVersions>
+                            <useUniqueVersions>true</useUniqueVersions>
                             <!--指定入口类 -->
                             <mainClass>com.bj.zzq.AutoOrderApplication</mainClass>
                         </manifest>
@@ -160,7 +98,8 @@
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <includes>
-                                        <!-- <include>*.properties</include> -->
+                                        <include>*.properties</include>
+                                        <include>*.xml</include>
                                     </includes>
                                 </resource>
                             </resources>
