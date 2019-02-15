@@ -5,5 +5,10 @@ package com.bj.zzq.test;
  * @Date: 2019/2/13
  * @Description:
  */
-public class UserService {
+public interface UserService {
+    public void addUser();
+
+    public void updateUser();
+
+    public void deleteUser();
 }

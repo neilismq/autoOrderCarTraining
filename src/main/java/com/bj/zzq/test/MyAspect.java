@@ -1,4 +1,4 @@
-package com.bj.zzq.utils;
+package com.bj.zzq.test;
 
 /**
  * @Author: zhaozhiqiang
