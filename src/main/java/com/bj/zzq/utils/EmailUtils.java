@@ -23,11 +23,12 @@ public class EmailUtils {
             Properties properties = new Properties();
             String emailReceiverAddr = orderInfo.getEmail();
             String mailHost = "";
-            if (emailReceiverAddr.endsWith("qq.com")) {
-                mailHost = "smtp.qq.com";
-            } else if (emailReceiverAddr.endsWith("163.com")) {
-                mailHost = "smtp.163.com";
-            }
+//            if (emailReceiverAddr.endsWith("qq.com")) {
+//                mailHost = "smtp.qq.com";
+//            } else if (emailReceiverAddr.endsWith("163.com")) {
+//                mailHost = "smtp.163.com";
+//            }
+            mailHost = "smtp.163.com";
             properties.setProperty("mail.host", mailHost);
             //设置用户的认证方式
             properties.setProperty("mail.smtp.auth", "true");

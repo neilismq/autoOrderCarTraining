@@ -115,7 +115,6 @@ public class Order {
      * 真正抢号
      *
      * @param orderInfo
-     * @throws IOException
      * @throws NoSuchAlgorithmException
      * @throws KeyStoreException
      * @throws KeyManagementException
@@ -139,79 +138,80 @@ public class Order {
         }
 
         //查询是否有号
-        HashMap<String, String> params3 = new HashMap<>();
-        HttpUtils.addJsonpParams(params3);
-        params3.put("xxzh", xxzh);
-        String result3 = HttpUtils.doHttp("get", HttpUtils.orderQueryUrl, null, params3, orderInfo);
-        //jQuery19103597663931350108_1547188429681({
-        //  "data": null,
-        //  "code": 111,
-        //  "message": "访问太过频繁,请输入验证码！"
-        //})
-        if (result3.contains("验证码")) {
-            Thread.sleep(5000);
+//        HashMap<String, String> params3 = new HashMap<>();
+//        HttpUtils.addJsonpParams(params3);
+//        params3.put("xxzh", xxzh);
+//        String result3 = HttpUtils.doHttp("get", HttpUtils.orderQueryUrl, null, params3, orderInfo);
+//        //jQuery19103597663931350108_1547188429681({
+//        //  "data": null,
+//        //  "code": 111,
+//        //  "message": "访问太过频繁,请输入验证码！"
+//        //})
+//        if (result3.contains("验证码")) {
+//            Thread.sleep(5000);
+//            return;
+//        }
+//        String replace = result3.substring(result3.indexOf("\"") + 1, result3.length() - 2).replace("\\r\\n", "").replace("\\", "");
+//        JSONObject jsonObject = (JSONObject) JSON.parse(replace);
+//        JSONObject JSONObject2 = (JSONObject) jsonObject.get("data");
+//        JSONArray uiDatas = JSONObject2.getJSONArray("UIDatas");
+//        for (int i = 0; i < uiDatas.size(); i++) {
+//            JSONObject o = (JSONObject) uiDatas.get(i);
+//            Integer sl = o.getInteger("SL");
+//            String yyrq = o.getString("Yyrq"); //2019/01/15 17:58:51
+//            String xnsdPage = o.getString("Xnsd"); // 时间段 1点到5点 简称 15
+//            yyrq = yyrq.substring(0, 10).replaceAll("/", "-");
+//
+//            if (sl <= 0 || !orderType.equals(xnsdPage) || !orderDate.equals(yyrq)) {
+//                continue;
+//            }
+
+        //有号，可以预约了
+        HashMap params5 = new HashMap();
+        params5.put("cnbh", cnbh);
+        params5.put("xxzh", xxzh);
+//        params5.put("params", cnbh + "." + yyrq + "." + orderType + ".");
+        params5.put("params", cnbh + "." + orderDate + "." + orderType + ".");
+        params5.put("isJcsdYyMode", "1");
+        HttpUtils.addJsonpParams(params5);
+        String result5 = HttpUtils.doHttp("get", HttpUtils.orderUrl, null, params5, orderInfo);
+        result5 = result5.substring(result5.indexOf("\"") + 1, result5.length() - 2).replace("\\r\\n", "").replace("\\", "");
+        JSONObject jsonObject5 = (JSONObject) JSON.parse(result5);
+        int code = jsonObject5.getInteger("code");
+        if (code == 0) {
+            log.info("抢到了！ " + orderDate + " " + orderType);
+            orderService.updateOrderStatusSuccess(orderInfo);
+            String finalXnsd = orderType;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String howTime = "";
+                    if (finalXnsd.equals("15")) {
+                        howTime = "下午1点到5点";
+                    } else if (finalXnsd.equals("812")) {
+                        howTime = "上午8点到12点";
+                    } else if (finalXnsd.equals("58")) {
+                        howTime = "下午5点到8点";
+                    }
+                    String numInWeekUpper = DateUtils.dateToWeek(orderDate);
+                    EmailUtils.sendEmail("龙泉驾校约车成功", "恭喜你约到 " + orderDate + " (周" + numInWeekUpper + ") " + howTime + "的车，详情请登录学车不查看！", orderInfo);
+                }
+            }).start();
+            //记录一下
+            File orderLog = new File("orderSuccess.log");
+            if (!orderLog.exists()) {
+                orderLog.createNewFile();
+            }
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(orderLog)));
+            bw.newLine();
+            bw.write(orderInfo.toString());
+            bw.flush();
+            //删除job
+            Scheduler scheduler = context.getScheduler();
+            scheduler.deleteJob(context.getJobDetail().getKey());
             return;
         }
-        String replace = result3.substring(result3.indexOf("\"") + 1, result3.length() - 2).replace("\\r\\n", "").replace("\\", "");
-        JSONObject jsonObject = (JSONObject) JSON.parse(replace);
-        JSONObject JSONObject2 = (JSONObject) jsonObject.get("data");
-        JSONArray uiDatas = JSONObject2.getJSONArray("UIDatas");
-        for (int i = 0; i < uiDatas.size(); i++) {
-            JSONObject o = (JSONObject) uiDatas.get(i);
-            Integer sl = o.getInteger("SL");
-            String yyrq = o.getString("Yyrq"); //2019/01/15 17:58:51
-            String xnsdPage = o.getString("Xnsd"); // 时间段 1点到5点 简称 15
-            yyrq = yyrq.substring(0, 10).replaceAll("/", "-");
-
-            if (sl <= 0 || !orderType.equals(xnsdPage) || !orderDate.equals(yyrq)) {
-                continue;
-            }
-
-            //有号，可以预约了
-            HashMap params5 = new HashMap();
-            params5.put("cnbh", cnbh);
-            params5.put("xxzh", xxzh);
-            params5.put("params", cnbh + "." + yyrq + "." + orderType + ".");
-            params5.put("isJcsdYyMode", "1");
-            HttpUtils.addJsonpParams(params5);
-            String result5 = HttpUtils.doHttp("get", HttpUtils.orderUrl, null, params5, orderInfo);
-            result5 = result5.substring(result5.indexOf("\"") + 1, result5.length() - 2).replace("\\r\\n", "").replace("\\", "");
-            JSONObject jsonObject5 = (JSONObject) JSON.parse(result5);
-            int code = jsonObject5.getInteger("code");
-            if (code == 0) {
-                log.info("抢到了！ " + orderDate + " " + orderType);
-                orderService.updateOrderStatusSuccess(orderInfo);
-                String finalXnsd = orderType;
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String howTime = "";
-                        if (finalXnsd.equals("15")) {
-                            howTime = "下午1点到5点";
-                        } else if (finalXnsd.equals("812")) {
-                            howTime = "上午8点到12点";
-                        } else if (finalXnsd.equals("58")) {
-                            howTime = "下午5点到8点";
-                        }
-                        String numInWeekUpper = DateUtils.dateToWeek(orderDate);
-                        EmailUtils.sendEmail("龙泉驾校约车成功", "恭喜你约到 " + orderDate + " (周" + numInWeekUpper + ") " + howTime + "的车，详情请登录学车不查看！", orderInfo);
-                    }
-                }).start();
-                //记录一下
-                File orderLog = new File("orderSuccess.log");
-                if (!orderLog.exists()) {
-                    orderLog.createNewFile();
-                }
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(orderLog)));
-                bw.newLine();
-                bw.write(orderInfo.toString());
-                bw.flush();
-                //删除job
-                Scheduler scheduler = context.getScheduler();
-                scheduler.deleteJob(context.getJobDetail().getKey());
-                return;
-            }
-        }
+//        }
 
     }
 
