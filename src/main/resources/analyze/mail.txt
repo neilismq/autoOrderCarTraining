@@ -1,0 +1,53 @@
+D:\Java\jdk1.8.0_181\bin\java.exe -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:13555,suspend=y,server=n -javaagent:C:\Users\18511\.IntelliJIdea2018.2\system\captureAgent\debugger-agent.jar=file:/C:/Users/18511/AppData/Local/Temp/capture.props -Dfile.encoding=UTF-8 -classpath "D:\Java\jdk1.8.0_181\jre\lib\charsets.jar;D:\Java\jdk1.8.0_181\jre\lib\deploy.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\access-bridge-64.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\cldrdata.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\dnsns.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\jaccess.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\jfxrt.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\localedata.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\nashorn.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\sunec.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\sunjce_provider.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\sunmscapi.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\sunpkcs11.jar;D:\Java\jdk1.8.0_181\jre\lib\ext\zipfs.jar;D:\Java\jdk1.8.0_181\jre\lib\javaws.jar;D:\Java\jdk1.8.0_181\jre\lib\jce.jar;D:\Java\jdk1.8.0_181\jre\lib\jfr.jar;D:\Java\jdk1.8.0_181\jre\lib\jfxswt.jar;D:\Java\jdk1.8.0_181\jre\lib\jsse.jar;D:\Java\jdk1.8.0_181\jre\lib\management-agent.jar;D:\Java\jdk1.8.0_181\jre\lib\plugin.jar;D:\Java\jdk1.8.0_181\jre\lib\resources.jar;D:\Java\jdk1.8.0_181\jre\lib\rt.jar;D:\IdeaProjects\autoOrderCarTraining\target\classes;C:\Users\18511\.m2\repository\mysql\mysql-connector-java\8.0.11\mysql-connector-java-8.0.11.jar;C:\Users\18511\.m2\repository\com\google\protobuf\protobuf-java\2.6.0\protobuf-java-2.6.0.jar;C:\Users\18511\.m2\repository\org\springframework\boot\spring-boot-starter\1.5.6.RELEASE\spring-boot-starter-1.5.6.RELEASE.jar;C:\Users\18511\.m2\repository\org\springframework\boot\spring-boot\1.5.6.RELEASE\spring-boot-1.5.6.RELEASE.jar;C:\Users\18511\.m2\repository\org\springframework\boot\spring-boot-autoconfigure\1.5.6.RELEASE\spring-boot-autoconfigure-1.5.6.RELEASE.jar;C:\Users\18511\.m2\repository\org\springframework\boot\spring-boot-starter-logging\1.5.6.RELEASE\spring-boot-starter-logging-1.5.6.RELEASE.jar;C:\Users\18511\.m2\repository\ch\qos\logback\logback-classic\1.1.11\logback-classic-1.1.11.jar;C:\Users\18511\.m2\repository\ch\qos\logback\logback-core\1.1.11\logback-core-1.1.11.jar;C:\Users\18511\.m2\repository\org\slf4j\jcl-over-slf4j\1.7.25\jcl-over-slf4j-1.7.25.jar;C:\Users\18511\.m2\repository\org\slf4j\jul-to-slf4j\1.7.25\jul-to-slf4j-1.7.25.jar;C:\Users\18511\.m2\repository\org\slf4j\log4j-over-slf4j\1.7.25\log4j-over-slf4j-1.7.25.jar;C:\Users\18511\.m2\repository\org\springframework\spring-core\4.3.10.RELEASE\spring-core-4.3.10.RELEASE.jar;C:\Users\18511\.m2\repository\org\yaml\snakeyaml\1.17\snakeyaml-1.17.jar;C:\Users\18511\.m2\repository\org\springframework\boot\spring-boot-starter-web\1.5.6.RELEASE\spring-boot-starter-web-1.5.6.RELEASE.jar;C:\Users\18511\.m2\repository\org\springframework\boot\spring-boot-starter-tomcat\1.5.6.RELEASE\spring-boot-starter-tomcat-1.5.6.RELEASE.jar;C:\Users\18511\.m2\repository\org\apache\tomcat\embed\tomcat-embed-core\8.5.16\tomcat-embed-core-8.5.16.jar;C:\Users\18511\.m2\repository\org\apache\tomcat\embed\tomcat-embed-el\8.5.16\tomcat-embed-el-8.5.16.jar;C:\Users\18511\.m2\repository\org\apache\tomcat\embed\tomcat-embed-websocket\8.5.16\tomcat-embed-websocket-8.5.16.jar;C:\Users\18511\.m2\repository\org\hibernate\hibernate-validator\5.3.5.Final\hibernate-validator-5.3.5.Final.jar;C:\Users\18511\.m2\repository\javax\validation\validation-api\1.1.0.Final\validation-api-1.1.0.Final.jar;C:\Users\18511\.m2\repository\org\jboss\logging\jboss-logging\3.3.1.Final\jboss-logging-3.3.1.Final.jar;C:\Users\18511\.m2\repository\com\fasterxml\classmate\1.3.3\classmate-1.3.3.jar;C:\Users\18511\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.8.9\jackson-databind-2.8.9.jar;C:\Users\18511\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.8.0\jackson-annotations-2.8.0.jar;C:\Users\18511\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.8.9\jackson-core-2.8.9.jar;C:\Users\18511\.m2\repository\org\springframework\spring-web\4.3.10.RELEASE\spring-web-4.3.10.RELEASE.jar;C:\Users\18511\.m2\repository\org\springframework\spring-aop\4.3.10.RELEASE\spring-aop-4.3.10.RELEASE.jar;C:\Users\18511\.m2\repository\org\springframework\spring-webmvc\4.3.10.RELEASE\spring-webmvc-4.3.10.RELEASE.jar;C:\Users\18511\.m2\repository\org\springframework\spring-expression\4.3.10.RELEASE\spring-expression-4.3.10.RELEASE.jar;C:\Users\18511\.m2\repository\org\springframework\boot\spring-boot-starter-jdbc\1.5.6.RELEASE\spring-boot-starter-jdbc-1.5.6.RELEASE.jar;C:\Users\18511\.m2\repository\org\apache\tomcat\tomcat-jdbc\8.5.16\tomcat-jdbc-8.5.16.jar;C:\Users\18511\.m2\repository\org\apache\tomcat\tomcat-juli\8.5.16\tomcat-juli-8.5.16.jar;C:\Users\18511\.m2\repository\org\springframework\spring-jdbc\4.3.10.RELEASE\spring-jdbc-4.3.10.RELEASE.jar;C:\Users\18511\.m2\repository\org\apache\httpcomponents\httpclient\4.5.7\httpclient-4.5.7.jar;C:\Users\18511\.m2\repository\org\apache\httpcomponents\httpcore\4.4.6\httpcore-4.4.6.jar;C:\Users\18511\.m2\repository\commons-codec\commons-codec\1.10\commons-codec-1.10.jar;C:\Users\18511\.m2\repository\org\apache\commons\commons-lang3\3.3.2\commons-lang3-3.3.2.jar;C:\Users\18511\.m2\repository\com\alibaba\fastjson\1.2.56\fastjson-1.2.56.jar;C:\Users\18511\.m2\repository\org\jsoup\jsoup\1.11.3\jsoup-1.11.3.jar;C:\Users\18511\.m2\repository\org\quartz-scheduler\quartz\2.3.0\quartz-2.3.0.jar;C:\Users\18511\.m2\repository\com\mchange\c3p0\0.9.5.2\c3p0-0.9.5.2.jar;C:\Users\18511\.m2\repository\com\mchange\mchange-commons-java\0.2.11\mchange-commons-java-0.2.11.jar;C:\Users\18511\.m2\repository\com\zaxxer\HikariCP-java6\2.3.13\HikariCP-java6-2.3.13.jar;C:\Users\18511\.m2\repository\org\slf4j\slf4j-api\1.7.25\slf4j-api-1.7.25.jar;C:\Users\18511\.m2\repository\org\quartz-scheduler\quartz-jobs\2.3.0\quartz-jobs-2.3.0.jar;C:\Users\18511\.m2\repository\javax\mail\mail\1.4.7\mail-1.4.7.jar;C:\Users\18511\.m2\repository\javax\activation\activation\1.1\activation-1.1.jar;C:\Users\18511\.m2\repository\org\springframework\spring-context-support\4.3.10.RELEASE\spring-context-support-4.3.10.RELEASE.jar;C:\Users\18511\.m2\repository\org\springframework\spring-beans\4.3.10.RELEASE\spring-beans-4.3.10.RELEASE.jar;C:\Users\18511\.m2\repository\org\springframework\spring-context\4.3.10.RELEASE\spring-context-4.3.10.RELEASE.jar;C:\Users\18511\.m2\repository\org\springframework\spring-tx\4.3.10.RELEASE\spring-tx-4.3.10.RELEASE.jar;D:\IntelliJ IDEA 2018.2.2\lib\idea_rt.jar" com.bj.zzq.test.Test
+Connected to the target VM, address: '127.0.0.1:13555', transport: 'socket'
+DEBUG: setDebug: JavaMail version 1.4.7
+DEBUG: getProvider() returning javax.mail.Provider[TRANSPORT,smtp,com.sun.mail.smtp.SMTPTransport,Oracle]
+DEBUG SMTP: useEhlo true, useAuth true
+DEBUG SMTP: trying to connect to host "smtp.163.com", port 25, isSSL false
+220 163.com Anti-spam GT for Coremail System (163com[20141201])
+DEBUG SMTP: connected to host "smtp.163.com", port: 25
+
+EHLO DESKTOP-QD4TL2R
+250-mail
+250-PIPELINING
+250-AUTH LOGIN PLAIN
+250-AUTH=LOGIN PLAIN
+250-coremail 1Uxr2xKj7kG0xkI17xGrU7I0s8FY2U3Uj8Cz28x1UUUUU7Ic2I0Y2UFnTRiRUCa0xDrUUUUj
+250-STARTTLS
+250 8BITMIME
+DEBUG SMTP: Found extension "PIPELINING", arg ""
+DEBUG SMTP: Found extension "AUTH", arg "LOGIN PLAIN"
+DEBUG SMTP: Found extension "AUTH=LOGIN", arg "PLAIN"
+DEBUG SMTP: Found extension "coremail", arg "1Uxr2xKj7kG0xkI17xGrU7I0s8FY2U3Uj8Cz28x1UUUUU7Ic2I0Y2UFnTRiRUCa0xDrUUUUj"
+DEBUG SMTP: Found extension "STARTTLS", arg ""
+DEBUG SMTP: Found extension "8BITMIME", arg ""
+DEBUG SMTP: Attempt to authenticate using mechanisms: LOGIN PLAIN DIGEST-MD5 NTLM
+DEBUG SMTP: AUTH LOGIN command trace suppressed
+DEBUG SMTP: AUTH LOGIN succeeded
+DEBUG SMTP: use8bit false
+MAIL FROM:<18511914092@163.com>
+250 Mail OK
+RCPT TO:<1010955631@qq.com>
+250 Mail OK
+DEBUG SMTP: Verified Addresses
+DEBUG SMTP:   1010955631@qq.com
+DATA
+354 End data with <CR><LF>.<CR><LF>
+From: 18511914092@163.com
+To: 1010955631@qq.com
+Message-ID: <897074030.0.1550466857930.JavaMail.18511@smtp.163.com>
+Subject: =?utf-8?B?57qm6L2m5oiQ5Yqf?=
+MIME-Version: 1.0
+Content-Type: text/html;charset=utf-8
+Content-Transfer-Encoding: base64
+
+5oGt5Zac5L2g57qm5YiwIDIwMTktMDktMTIgKOWRqOS4gCkgMeeahOi9pu+8jOivpuaDheivt+eZ
+u+W9leWtpui9puS4jeafpeeci++8gQ==
+.
+250 Mail OK queued as smtp7,C8CowACXTJIiP2pcHGAHGQ--.12076S2 1550466859
+QUIT
+221 Bye
+Disconnected from the target VM, address: '127.0.0.1:13555', transport: 'socket'
+13:14:17.989 [main] INFO com.bj.zzq.utils.EmailUtils - 发送邮件成功
+
+Process finished with exit code 0

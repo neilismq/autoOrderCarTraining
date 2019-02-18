@@ -194,7 +194,7 @@ public class Order {
                         howTime = "下午5点到8点";
                     }
                     String numInWeekUpper = DateUtils.dateToWeek(orderDate);
-                    EmailUtils.sendEmail("龙泉驾校约车成功", "恭喜你约到 " + orderDate + " (周" + numInWeekUpper + ") " + howTime + "的车，详情请登录学车不查看！", orderInfo);
+                    EmailUtils.sendEmail("约车成功", "恭喜你约到 " + orderDate + " (周" + numInWeekUpper + ") " + howTime + "的车，详情请登录学车不查看！", orderInfo);
                 }
             }).start();
             //记录一下
