@@ -162,7 +162,7 @@
                     var $tbody = $("#users > tbody");
                     $tbody.empty();
                     for (var i = 0; i < users.length; i++) {
-                        var child = $("<tr id='" + users[i].id + "'><td>" + users[i].username + "</td><td>" + users[i].password + "</td><td>" + users[i].email + "</td><td>" + users[i].cnbh + "</td><td>" + formatDate(users[i].create_time) + "</td><td><input type='button' value='约车'></td></tr>")
+                        var child = $("<tr id='" + users[i].id + "'><td>" + users[i].username + "</td><td>" + users[i].password + "</td><td>" + users[i].email + "</td><td>" + users[i].cnbh + "</td><td>" + formatDate(users[i].createTime) + "</td><td><input type='button' value='约车'></td></tr>")
                         $tbody.append(child);
                     }
                     $tbody.parent().removeAttr("style");
@@ -176,14 +176,14 @@
                         $("#light2").css("display", "block");
                         $("#fade").css("display", "block");
                         var params = {
-                            user_id: $(this).attr("id")
+                            userId: $(this).attr("id")
                         };
                         var $tbody = $("#light2 table tbody");
                         $tbody.empty();
                         sendAjax("/order/selectOrdersByUser", JSON.stringify(params), function (data2) {
                             var $orders = data2.body;
                             $.each($orders, function (i, val) {
-                                var $tr = $("<tr><td>" + val.orderDate + "</td><td>" + val.timeSlot + "</td><td>" + (val.status == 0 ? '未抢到' : '已抢到') + "</td></tr>")
+                                var $tr = $("<tr><td>" + formatDate2(val.orderDate) + "</td><td>" + val.timeSlot + "</td><td>" + (val.status == 0 ? '未抢到' : '已抢到') + "</td></tr>")
                                 $tbody.append($tr);
                             });
                         })
@@ -216,6 +216,12 @@
             return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
         }
     }
+    function formatDate2(val) {
+        if (val) {
+            var date = new Date(val);
+            return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " ;
+        }
+    }
 
     function showDialog(userId) {
         $("#light").css("display", "block");
@@ -236,7 +242,7 @@
 
     function order() {
         var params = {
-            user_id: $("#userId").val(),
+            userId: $("#userId").val(),
             orderDate: $("#date").val(),
             timeSlot: $("#timeSlot").val()
         };

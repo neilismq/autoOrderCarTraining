@@ -1,9 +1,10 @@
 package com.bj.zzq.core;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bj.zzq.dao.OrderService;
+import com.bj.zzq.model.OrderInfoEntity;
+import com.bj.zzq.model.OrderTaskEntity;
+import com.bj.zzq.service.OrderService;
 import com.bj.zzq.utils.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,10 +29,10 @@ import java.util.TreeSet;
 public class Order {
     private static Logger log = Logger.getLogger(Order.class);
 
-    public static void addOrderJobSchedule(Scheduler scheduler, OrderInfo orderInfo) throws SchedulerException {
-        JobDetail orderJob = getOrderJob(orderInfo);
-        Trigger fireTrigger = getFireTrigger(orderInfo);
-        Trigger pickTrigger = getPickTrigger(orderInfo);
+    public static void addOrderJobSchedule(Scheduler scheduler, OrderTaskEntity orderTaskEntity) throws SchedulerException {
+        JobDetail orderJob = getOrderJob(orderTaskEntity);
+        Trigger fireTrigger = getFireTrigger(orderTaskEntity);
+        Trigger pickTrigger = getPickTrigger(orderTaskEntity);
         TreeSet<Trigger> triggers = new TreeSet<>();
         if (fireTrigger != null) {
             triggers.add(fireTrigger);
@@ -82,20 +83,20 @@ public class Order {
     }
 
 
-    private static Trigger getFireTrigger(OrderInfo orderInfo) {
-        Date fireTime = generateFireTimeByOrderDate(orderInfo.getOrderDate());
+    private static Trigger getFireTrigger(OrderTaskEntity orderTaskEntity) {
+        Date fireTime = generateFireTimeByOrderDate(orderTaskEntity.getOrderDate());
         SimpleTrigger fireTrigger = null;
         if (fireTime != null) {
-            fireTrigger = TriggerBuilder.newTrigger().withIdentity("fire_trigger_" + orderInfo.getUsername() + "_" + orderInfo.getOrderDate(), "group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(100).withIntervalInMilliseconds(1)).startAt(fireTime).withPriority(10).build();
+            fireTrigger = TriggerBuilder.newTrigger().withIdentity("fire_trigger_" + orderTaskEntity.getUsername() + "_" + orderTaskEntity.getOrderDate(), "group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(100).withIntervalInMilliseconds(1)).startAt(fireTime).withPriority(10).build();
         }
         return fireTrigger;
     }
 
 
-    private static Trigger getPickTrigger(OrderInfo orderInfo) {
-        Date pickEndTime = getPickEndTime(orderInfo.getOrderDate());
-        Date startTime = generateFireTimeByOrderDate(orderInfo.getOrderDate());
-        TriggerBuilder<SimpleTrigger> builder = TriggerBuilder.newTrigger().withIdentity("pick_trigger_" + orderInfo.getUsername() + "_" + orderInfo.getOrderDate(), "group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().repeatForever().withIntervalInMinutes(3)).withPriority(5).endAt(pickEndTime);
+    private static Trigger getPickTrigger(OrderTaskEntity orderTaskEntity) {
+        Date pickEndTime = getPickEndTime(orderTaskEntity.getOrderDate());
+        Date startTime = generateFireTimeByOrderDate(orderTaskEntity.getOrderDate());
+        TriggerBuilder<SimpleTrigger> builder = TriggerBuilder.newTrigger().withIdentity("pick_trigger_" + orderTaskEntity.getUsername() + "_" + orderTaskEntity.getOrderDate(), "group_order").withSchedule(SimpleScheduleBuilder.simpleSchedule().repeatForever().withIntervalInMinutes(3)).withPriority(5).endAt(pickEndTime);
         if (startTime == null) {
             builder.startNow();
         } else {
@@ -104,34 +105,33 @@ public class Order {
         return builder.build();
     }
 
-    private static JobDetail getOrderJob(OrderInfo orderInfo) {
-        JobDetail jobDetail = JobBuilder.newJob(OrderJob.class).withIdentity("job_" + orderInfo.getUsername() + "_" + orderInfo.getOrderDate(), "job_group").storeDurably(true).build();
+    private static JobDetail getOrderJob(OrderTaskEntity orderTaskEntity) {
+        JobDetail jobDetail = JobBuilder.newJob(OrderJob.class).withIdentity("job_" + orderTaskEntity.getUsername() + "_" + orderTaskEntity.getOrderDate(), "job_group").storeDurably(true).build();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        jobDataMap.put("orderInfo", orderInfo);
+        jobDataMap.put("orderInfo", orderTaskEntity);
         return jobDetail;
     }
 
     /**
      * 真正抢号
      *
-     * @param orderInfo
      * @throws NoSuchAlgorithmException
      * @throws KeyStoreException
      * @throws KeyManagementException
      * @throws URISyntaxException
      */
-    public static void orderTask(OrderInfo orderInfo, JobExecutionContext context, OrderService orderService) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException, InterruptedException, SchedulerException {
+    public static void orderTask(OrderTaskEntity orderTaskEntity, JobExecutionContext context, OrderService orderService) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException, InterruptedException, SchedulerException {
 
-        String xxzh = login(orderInfo);
+        String xxzh = login(orderTaskEntity);
         //获取用户信息
-        String cnbh = orderInfo.getCnbh();
-        String orderType = orderInfo.getTimeSlot();
-        String orderDate = orderInfo.getOrderDate();
+        String cnbh = orderTaskEntity.getCnbh();
+        String orderType = orderTaskEntity.getTimeSlot();
+        String orderDate = orderTaskEntity.getOrderDate();
         if (StringUtils.isBlank(cnbh)) {
             //获取cnbh
             HashMap<String, String> params4 = new HashMap<>();
             params4.put("xxzh", xxzh);
-            String resultStudent = HttpUtils.doHttp("get", HttpUtils.userInfoUrl, null, params4, orderInfo);
+            String resultStudent = HttpUtils.doHttp("get", HttpUtils.userInfoUrl, null, params4, orderTaskEntity);
             JSONObject jsonObject = (JSONObject) JSON.parse(resultStudent);
             JSONObject data = jsonObject.getJSONObject("data");
             cnbh = data.getString("CNBH");
@@ -174,13 +174,16 @@ public class Order {
         params5.put("params", cnbh + "." + orderDate + "." + orderType + ".");
         params5.put("isJcsdYyMode", "1");
         HttpUtils.addJsonpParams(params5);
-        String result5 = HttpUtils.doHttp("get", HttpUtils.orderUrl, null, params5, orderInfo);
+        String result5 = HttpUtils.doHttp("get", HttpUtils.orderUrl, null, params5, orderTaskEntity);
         result5 = result5.substring(result5.indexOf("\"") + 1, result5.length() - 2).replace("\\r\\n", "").replace("\\", "");
         JSONObject jsonObject5 = (JSONObject) JSON.parse(result5);
         int code = jsonObject5.getInteger("code");
         if (code == 0) {
             log.info("抢到了！ " + orderDate + " " + orderType);
-            orderService.updateOrderStatusSuccess(orderInfo);
+            OrderInfoEntity orderInfoEntity = new OrderInfoEntity();
+            orderInfoEntity.setStatus("1");
+            orderInfoEntity.setId(orderTaskEntity.getOrderId());
+            orderService.updateOrderStatusSuccess(orderInfoEntity);
             String finalXnsd = orderType;
             new Thread(new Runnable() {
                 @Override
@@ -194,18 +197,9 @@ public class Order {
                         howTime = "下午5点到8点";
                     }
                     String numInWeekUpper = DateUtils.dateToWeek(orderDate);
-                    EmailUtils.sendEmail("龙泉驾校约车成功", "恭喜你约到 " + orderDate + " (周" + numInWeekUpper + ") " + howTime + "的车，详情请登录学车不查看！", orderInfo);
+                    EmailUtils.sendEmail("龙泉驾校约车成功", "恭喜你约到 " + orderDate + " (周" + numInWeekUpper + ") " + howTime + "的车，详情请登录学车不查看！", orderTaskEntity.getEmail());
                 }
             }).start();
-            //记录一下
-            File orderLog = new File("orderSuccess.log");
-            if (!orderLog.exists()) {
-                orderLog.createNewFile();
-            }
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(orderLog)));
-            bw.newLine();
-            bw.write(orderInfo.toString());
-            bw.flush();
             //删除job
             Scheduler scheduler = context.getScheduler();
             scheduler.deleteJob(context.getJobDetail().getKey());
@@ -215,14 +209,14 @@ public class Order {
 
     }
 
-    public static String login(OrderInfo orderInfo) throws URISyntaxException, IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    public static String login(OrderTaskEntity orderTaskEntity) throws URISyntaxException, IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         HashMap params = new HashMap();
         HttpUtils.addJsonpParams(params);
-        params.put("username", orderInfo.getUsername());
-        params.put("passwordmd5", DigestUtils.md5Hex(orderInfo.getPassword()));
+        params.put("username", orderTaskEntity.getUsername());
+        params.put("passwordmd5", DigestUtils.md5Hex(orderTaskEntity.getPassword()));
 
         //登录1
-        String result = HttpUtils.doHttp("get", HttpUtils.loginUrl, null, params, orderInfo);
+        String result = HttpUtils.doHttp("get", HttpUtils.loginUrl, null, params, orderTaskEntity);
         //学员编号
         String xybh = result.substring(result.indexOf("XYBH") + 10, result.indexOf("\\", result.indexOf("XYBH") + 10));
         //不知道啥号，能用就行
@@ -233,10 +227,10 @@ public class Order {
         //登录2,后台只判断了User-Agent。。。
         HashMap<String, String> params2 = new HashMap<>();
         params2.put("xybh", xybh);
-        params2.put("password", orderInfo.getPassword());
+        params2.put("password", orderTaskEntity.getPassword());
         params2.put("jgid", jgid);
         HttpUtils.addJsonpParams(params2);
-        HttpUtils.doHttp("get", HttpUtils.longquanjiaxiaoLoginUrl, null, params2, orderInfo);
+        HttpUtils.doHttp("get", HttpUtils.longquanjiaxiaoLoginUrl, null, params2, orderTaskEntity);
         return xxzh;
     }
 }

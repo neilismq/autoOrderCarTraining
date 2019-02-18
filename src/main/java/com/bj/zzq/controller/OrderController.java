@@ -1,11 +1,16 @@
 package com.bj.zzq.controller;
 
 import com.bj.zzq.core.*;
-import com.bj.zzq.dao.OrderService;
+import com.bj.zzq.dao.UserDao;
+import com.bj.zzq.model.OrderInfoEntity;
+import com.bj.zzq.model.OrderTaskEntity;
+import com.bj.zzq.model.UserEntity;
+import com.bj.zzq.service.OrderService;
+import com.bj.zzq.test.UserService;
 import com.bj.zzq.utils.CommonResponse;
 import com.bj.zzq.utils.DateUtils;
 import com.bj.zzq.utils.IdUtils;
-import com.sun.corba.se.spi.orb.ORBData;
+import com.bj.zzq.utils.PropertiesLoader;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
+
+import static com.bj.zzq.utils.PropertiesLoader.orderDate;
 
 /**
  * @Author: zhaozhiqiang
@@ -31,10 +38,12 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+
     @ResponseBody
     @RequestMapping(value = "/addOrder", method = RequestMethod.POST)
-    public CommonResponse addJobs(@RequestBody OrderInfo orderInfo) throws SchedulerException {
-        String orderDate = orderInfo.getOrderDate();
+    public CommonResponse addJobs(@RequestBody OrderInfoEntity orderInfoEntity) throws SchedulerException {
+        Date orderDateDf = orderInfoEntity.getOrderDate();
+        String orderDate = DateUtils.dateToStr(orderDateDf);
         Date pickEndTime = Order.getPickEndTime(orderDate);
         Date now = new Date();
         if (now.after(pickEndTime)) {
@@ -42,50 +51,63 @@ public class OrderController {
             response.setMessage("抢号时间设置不对");
             return response;
         }
-        List<OrderInfo> orderInfo1 = orderService.selectOrderInfoUnique(orderInfo);
-        if (orderInfo1 != null && orderInfo1.size() > 0) {
+        List<UserEntity> userEntities = orderService.selectUserByUserId(orderInfoEntity.getUserId());
+        if (userEntities == null || userEntities.size() == 0) {
             CommonResponse response = CommonResponse.errorInstance();
-            response.setMessage("此订单已经存在！");
+            response.setMessage("请选择用户！");
             return response;
         }
-        List<UserInfo> userInfos = orderService.selectUserByUserId(orderInfo);
-        if (userInfos != null && userInfos.size() > 0) {
-            UserInfo userInfo = userInfos.get(0);
-            orderInfo.setUsername(userInfo.getUsername());
-            orderInfo.setPassword(userInfo.getPassword());
-            orderInfo.setCnbh(userInfo.getCnbh());
-            orderInfo.setEmail(userInfo.getEmail());
+        UserEntity userEntity = userEntities.get(0);
+        List<OrderInfoEntity> orderInfoEntities = orderService.selectOrderInfoUnique(userEntity.getId(), orderInfoEntity);
+        if (orderInfoEntities != null && orderInfoEntities.size() > 0) {
+            CommonResponse response = CommonResponse.errorInstance();
+            response.setMessage("此订单已经存在，请不要重复设置！");
+            return response;
         }
-        orderInfo.setId(IdUtils.uuid());
-        orderInfo.setCreate_time(new Date());
-        orderInfo.setStatus("0");// 0-没抢到，1-已抢到
-        orderService.insertOrderInfo(orderInfo);
-        Order.addOrderJobSchedule(scheduler, orderInfo);
+        orderInfoEntity.setId(IdUtils.uuid());
+        orderInfoEntity.setCreateTime(new Date());
+        orderInfoEntity.setStatus("0");// 0-没抢到，1-已抢到
+        orderInfoEntity.setIsStop("0");// 0-没抢到，1-已抢到
+        orderService.insertOrderInfo(orderInfoEntity);
+        OrderTaskEntity orderTaskEntity = new OrderTaskEntity();
+        orderTaskEntity.setUsername(userEntity.getUsername());
+        orderTaskEntity.setPassword(userEntity.getPassword());
+        orderTaskEntity.setCnbh(userEntity.getCnbh());
+        orderTaskEntity.setEmail(userEntity.getEmail());
+        orderTaskEntity.setOrderDate(DateUtils.dateToStr(orderInfoEntity.getOrderDate()));
+        orderTaskEntity.setTimeSlot(orderInfoEntity.getTimeSlot());
+        orderTaskEntity.setOrderId(orderInfoEntity.getId());
+        Order.addOrderJobSchedule(scheduler, orderTaskEntity);
         return CommonResponse.okInstance();
     }
 
     @ResponseBody
     @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
     public CommonResponse deleteOrder(@RequestBody String id) throws SchedulerException {
-        OrderInfo orderInfo = orderService.selectOrderbyId(id);
-        JobKey jobKey = new JobKey("job_" + orderInfo.getUsername() + "_" + orderInfo.getOrderDate(), "job_group");
-        deleteJobs(new JobKey[]{jobKey});
-        orderService.deleteOrderById(id);
+        OrderInfoEntity orderInfoEntity = orderService.selectOrderbyId(id);
+        List<UserEntity> userEntities = orderService.selectUserByUserId(orderInfoEntity.getUserId());
+        if (userEntities != null && userEntities.size() > 0) {
+            UserEntity userEntity = userEntities.get(0);
+            JobKey jobKey = new JobKey("job_" + userEntity.getUsername() + "_" + orderInfoEntity.getOrderDate(), "job_group");
+            deleteJobs(new JobKey[]{jobKey});
+            orderService.deleteOrderById(id);
+        }
         return CommonResponse.okInstance();
     }
 
     @ResponseBody
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
-    public CommonResponse addUsers(@RequestBody UserInfo userInfo) {
-        List<UserInfo> userInfo1 = orderService.selectUserByUsername(userInfo.getUsername());
-        if (userInfo1 != null && userInfo1.size() > 0) {
+    public CommonResponse addUsers(@RequestBody UserEntity userEntity) {
+        List<UserEntity> userEntities = orderService.selectUserByUsername(userEntity.getUsername());
+        if (userEntities != null && userEntities.size() > 0) {
             CommonResponse response = CommonResponse.errorInstance();
             response.setBody("此用户已经存在！");
             return response;
         }
         String uuid = IdUtils.uuid();
-        userInfo.setId(uuid);
-        orderService.insertUser(userInfo);
+        userEntity.setId(uuid);
+        userEntity.setCreateTime(new Date());
+        orderService.insertUser(userEntity);
         return CommonResponse.okInstance();
     }
 
@@ -99,18 +121,18 @@ public class OrderController {
     @ResponseBody
     @RequestMapping(value = "/selectUsers", method = RequestMethod.POST)
     public CommonResponse selectAllUsers() {
-        List<UserInfo> userInfos = orderService.selectAllUsers();
+        List<UserEntity> userEntities = orderService.selectAllUsers();
         CommonResponse response = CommonResponse.okInstance();
-        response.setBody(userInfos);
+        response.setBody(userEntities);
         return response;
     }
 
     @ResponseBody
     @RequestMapping(value = "/selectOrdersByUser", method = RequestMethod.POST)
-    public CommonResponse selectOrderByUserId(@RequestBody OrderInfo orderInfo) {
-        List<OrderInfo> orderInfos = orderService.selectOrderByUserId(orderInfo.getUser_id());
+    public CommonResponse selectOrderByUserId(@RequestBody OrderInfoEntity orderInfoEntity) {
+        List<OrderInfoEntity> orderInfoEntities = orderService.selectOrderByUserId(orderInfoEntity.getUserId());
         CommonResponse response = CommonResponse.okInstance();
-        response.setBody(orderInfos);
+        response.setBody(orderInfoEntities);
         return response;
     }
 
@@ -178,21 +200,21 @@ public class OrderController {
     public CommonResponse queryJobsInfo() throws SchedulerException {
 
         Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.anyJobGroup());
-        ArrayList<OrderResponse> orderResponses = new ArrayList<>();
+        ArrayList<OrderTaskEntity> orderResponses = new ArrayList<>();
         for (JobKey jobKey : jobKeys) {
             JobDetail jobDetail = scheduler.getJobDetail(jobKey);
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
-            OrderInfo orderInfo = (OrderInfo) jobDataMap.get("orderInfo");
-            OrderResponse orderResponse = new OrderResponse();
-            orderResponse.setUsername(orderInfo.getUsername());
-            orderResponse.setPassword(orderInfo.getPassword());
+            OrderTaskEntity orderTaskEntity = (OrderTaskEntity) jobDataMap.get("orderInfo");
+            OrderTaskEntity orderResponse = new OrderTaskEntity();
+            orderResponse.setUsername(orderTaskEntity.getUsername());
+            orderResponse.setPassword(orderTaskEntity.getPassword());
             orderResponse.setJobName(jobKey.getName());
-            orderResponse.setJobGroup(jobKey.getGroup());
-            orderResponse.setOrderDate(orderInfo.getOrderDate());
-            orderResponse.setTimeSlot(orderInfo.getTimeSlot());
-            orderResponse.setCnbh(orderInfo.getCnbh());
-            orderResponse.setEmail(orderInfo.getEmail());
-            ArrayList<TriggerInfo> triggerInfos = new ArrayList<>();
+            orderResponse.setGroupName(jobKey.getGroup());
+            orderResponse.setOrderDate(orderTaskEntity.getOrderDate());
+            orderResponse.setTimeSlot(orderTaskEntity.getTimeSlot());
+            orderResponse.setCnbh(orderTaskEntity.getCnbh());
+            orderResponse.setEmail(orderTaskEntity.getEmail());
+            List<TriggerInfo> triggerInfos = new ArrayList<>();
             List<? extends Trigger> triggersOfJob = scheduler.getTriggersOfJob(jobKey);
             for (Trigger trigger : triggersOfJob) {
                 Trigger.TriggerState triggerState = scheduler.getTriggerState(trigger.getKey());
@@ -209,7 +231,6 @@ public class OrderController {
                 triggerInfo.setStatus(triggerState.name());
                 triggerInfos.add(triggerInfo);
             }
-
             orderResponse.setTriggers(triggerInfos);
             orderResponses.add(orderResponse);
         }
@@ -218,21 +239,4 @@ public class OrderController {
         return response;
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/test")
-    public CommonResponse test() {
-        CommonResponse response = CommonResponse.okInstance();
-        OrderInfo[] infos = new OrderInfo[2];
-        OrderInfo info = new OrderInfo();
-        info.setUsername("111");
-        info.setPassword("222");
-        info.setEmail("11");
-        info.setCnbh("111");
-        info.setOrderDate("111");
-        info.setTimeSlot("15");
-        infos[0] = info;
-        infos[1] = info;
-        response.setBody(infos);
-        return response;
-    }
 }

@@ -1,7 +1,5 @@
 package com.bj.zzq.utils;
 
-
-import com.bj.zzq.core.OrderInfo;
 import org.apache.log4j.Logger;
 
 import javax.mail.*;
@@ -18,17 +16,10 @@ public class EmailUtils {
 
     private static Logger log = Logger.getLogger(EmailUtils.class);
 
-    public static void sendEmail(String title, String content, OrderInfo orderInfo) {
+    public static void sendEmail(String title, String content, String receive) {
         try {
             Properties properties = new Properties();
-            String emailReceiverAddr = orderInfo.getEmail();
-            String mailHost = "";
-//            if (emailReceiverAddr.endsWith("qq.com")) {
-//                mailHost = "smtp.qq.com";
-//            } else if (emailReceiverAddr.endsWith("163.com")) {
-//                mailHost = "smtp.163.com";
-//            }
-            mailHost = "smtp.163.com";
+            String mailHost = "smtp.163.com";
             properties.setProperty("mail.host", mailHost);
             //设置用户的认证方式
             properties.setProperty("mail.smtp.auth", "true");
@@ -42,7 +33,7 @@ public class EmailUtils {
             //发件人
             message.setFrom(new InternetAddress(PropertiesLoader.emailSenderAddr));
             //收件人地址
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(emailReceiverAddr));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(receive));
             //标题
             message.setSubject(title, "utf-8");
             message.setContent(content, "text/html;charset=utf-8");

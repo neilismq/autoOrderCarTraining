@@ -47,7 +47,7 @@
                 var body = data.body;
                 var tbody = $("#showTasks tbody");
                 $.each(body, function (i, val) {
-                    var tr = $("<tr><td>" + val.jobName + "</td><td>" + val.jobGroup + "</td><td>" + val.username + "</td><td>" + val.password +
+                    var tr = $("<tr><td>" + val.jobName + "</td><td>" + val.groupName + "</td><td>" + val.username + "</td><td>" + val.password +
                         "</td><td>" + val.email + "</td><td>" + val.cnbh + "</td><td>" + val.orderDate + "</td><td>" + val.timeSlot + "</td></tr>")
                     tbody.append(tr);
                 })
