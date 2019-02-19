@@ -151,12 +151,12 @@ public class OrderController {
     @ApiOperation(value = "暂停预约")
     @ResponseBody
     @RequestMapping(value = "/pauseOrder", method = RequestMethod.POST)
-    public CommonResponse pauseOrder(@RequestBody String orderId) throws SchedulerException {
-        OrderInfoEntity orderInfoEntity = orderService.selectOrderbyId(orderId);
+    public CommonResponse pauseOrder(@RequestBody OrderInfoEntity orderInfo) throws SchedulerException {
+        OrderInfoEntity orderInfoEntity = orderService.selectOrderbyId(orderInfo.getId());
         if (orderInfoEntity == null) {
             return CommonResponse.errorInstance().setMessage("预约不存在！");
         }
-        UserEntity userEntity = orderService.selectUserByUserId(orderId);
+        UserEntity userEntity = orderService.selectUserByUserId(orderInfoEntity.getUserId());
         if (userEntity == null) {
             return CommonResponse.errorInstance().setMessage("用户不存在！");
         }
@@ -170,12 +170,12 @@ public class OrderController {
     @ApiOperation(value = "恢复暂停的预约")
     @ResponseBody
     @RequestMapping(value = "/resumeOrder", method = RequestMethod.POST)
-    public CommonResponse resumeOrder(@RequestBody String orderId) throws SchedulerException {
-        OrderInfoEntity orderInfoEntity = orderService.selectOrderbyId(orderId);
+    public CommonResponse resumeOrder(@RequestBody OrderInfoEntity orderInfo) throws SchedulerException {
+        OrderInfoEntity orderInfoEntity = orderService.selectOrderbyId(orderInfo.getId());
         if (orderInfoEntity == null) {
             return CommonResponse.errorInstance().setMessage("预约不存在！");
         }
-        UserEntity userEntity = orderService.selectUserByUserId(orderId);
+        UserEntity userEntity = orderService.selectUserByUserId(orderInfoEntity.getUserId());
         if (userEntity == null) {
             return CommonResponse.errorInstance().setMessage("用户不存在！");
         }

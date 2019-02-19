@@ -142,7 +142,9 @@
         <tr>
             <td>预约日期</td>
             <td>时间段</td>
+            <td>是否抢到</td>
             <td>状态</td>
+            <td>操作</td>
         </tr>
         </thead>
         <tbody>
@@ -183,10 +185,27 @@
                         sendAjax("/order/selectOrdersByUser", JSON.stringify(params), function (data2) {
                             var $orders = data2.body;
                             $.each($orders, function (i, val) {
-                                var $tr = $("<tr><td>" + formatDate2(val.orderDate) + "</td><td>" + val.timeSlot + "</td><td>" + (val.status == 0 ? '未抢到' : '已抢到') + "</td></tr>")
+                                var $tr = $("<tr id='" + val.id + "'><td>" + formatDate2(val.orderDate) + "</td><td>" + val.timeSlot + "</td><td>" + (val.status == 0 ? '未抢到' : '已抢到') + "</td><td>" + (val.isStop == 0 ? '正常' : '暂停') + "</td><td><input class='pause' status='" + val.isStop + "' type='button' value='" + (val.isStop == 0 ? "暂停" : "恢复") + "'></td></tr>")
                                 $tbody.append($tr);
                             });
-                        })
+                            $("input.pause").each(function (i, obj) {
+                                $(obj).on("click", function () {
+                                    var status = $(this).attr("status");
+                                    var orderId = $(this).parent().parent().attr("id");
+                                    if (status == 0) {
+                                        sendAjax("/order/pauseOrder", JSON.stringify({id: orderId}), function (data) {
+                                            alert(data.message);
+                                        })
+                                    } else if (status == 1) {
+                                        sendAjax("/order/resumeOrder", JSON.stringify({id: orderId}), function (data) {
+                                            alert(data.message);
+                                        })
+                                    }
+                                });
+                            });
+                        });
+
+
                     });
                 }
             });
@@ -240,6 +259,7 @@
             success: callback
         });
     }
+
 
     function order() {
         var params = {
