@@ -9,6 +9,7 @@ import com.bj.zzq.model.UserEntityExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -81,5 +82,11 @@ public class OrderService {
         UserEntityExample example = new UserEntityExample();
         example.createCriteria().andIdEqualTo(id);
         return userDao.selectExample(example);
+    }
+
+    public List<OrderInfoEntity> selectAllExecutableOrders() {
+        OrderInfoEntityExample example = new OrderInfoEntityExample();
+        example.createCriteria().andStatusEqualTo("0").andIsStopEqualTo("0").andOrderDateGreaterThan(new Date());
+        return orderInfoDao.selectExample(example);
     }
 }

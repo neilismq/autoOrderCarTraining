@@ -10,6 +10,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.quartz.*;
+import sun.security.krb5.internal.PAData;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -232,5 +233,18 @@ public class Order {
         HttpUtils.addJsonpParams(params2);
         HttpUtils.doHttp("get", HttpUtils.longquanjiaxiaoLoginUrl, null, params2, orderTaskEntity);
         return xxzh;
+    }
+
+    public static String getCnbh(String username, String password) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException {
+        OrderTaskEntity taskEntity = new OrderTaskEntity();
+        taskEntity.setUsername(username);
+        taskEntity.setPassword(password);
+        String xxzh = login(taskEntity);
+        HashMap<String, String> params4 = new HashMap<>();
+        params4.put("xxzh", xxzh);
+        String resultStudent = HttpUtils.doHttp("get", HttpUtils.userInfoUrl, null, params4, taskEntity);
+        JSONObject jsonObject = (JSONObject) JSON.parse(resultStudent);
+        JSONObject data = jsonObject.getJSONObject("data");
+        return data.getString("CNBH");
     }
 }

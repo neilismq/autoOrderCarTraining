@@ -1,16 +1,15 @@
 package com.bj.zzq.controller;
 
 import com.bj.zzq.core.*;
-import com.bj.zzq.dao.UserDao;
 import com.bj.zzq.model.OrderInfoEntity;
 import com.bj.zzq.model.OrderTaskEntity;
 import com.bj.zzq.model.UserEntity;
 import com.bj.zzq.service.OrderService;
-import com.bj.zzq.test.UserService;
 import com.bj.zzq.utils.CommonResponse;
 import com.bj.zzq.utils.DateUtils;
 import com.bj.zzq.utils.IdUtils;
-import com.bj.zzq.utils.PropertiesLoader;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
 
-import static com.bj.zzq.utils.PropertiesLoader.orderDate;
 
 /**
  * @Author: zhaozhiqiang
@@ -32,6 +30,8 @@ import static com.bj.zzq.utils.PropertiesLoader.orderDate;
 @Controller
 @RequestMapping(value = "/order")
 public class OrderController {
+    private static Logger log = Logger.getLogger(OrderController.class.getClass());
+
     @Autowired
     private Scheduler scheduler;
 
@@ -98,17 +98,49 @@ public class OrderController {
     @ResponseBody
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
     public CommonResponse addUsers(@RequestBody UserEntity userEntity) {
+        if (StringUtils.isEmpty(userEntity.getUsername())) {
+            return CommonResponse.errorInstance().setBody("账号不能为空，请检查！");
+        }
+        if (StringUtils.isEmpty(userEntity.getPassword())) {
+            return CommonResponse.errorInstance().setBody("密码不能为空，请检查！");
+        }
+        if (StringUtils.isEmpty(userEntity.getEmail())) {
+            return CommonResponse.errorInstance().setBody("邮箱不能为空，请检查！");
+        }
         List<UserEntity> userEntities = orderService.selectUserByUsername(userEntity.getUsername());
         if (userEntities != null && userEntities.size() > 0) {
-            CommonResponse response = CommonResponse.errorInstance();
-            response.setBody("此用户已经存在！");
-            return response;
+            return CommonResponse.errorInstance().setBody("此用户已经存在，请检查！");
+        }
+        boolean isValid = testUserIsValid(userEntity.getUsername(), userEntity.getPassword());
+        if (!isValid) {
+            return CommonResponse.errorInstance().setBody("账号密码不正确，请检查！");
+        }
+        if (StringUtils.isEmpty(userEntity.getCnbh())) {
+            try {
+                String cnbh = Order.getCnbh(userEntity.getUsername(), userEntity.getPassword());
+                userEntity.setCnbh(cnbh);
+            } catch (Exception e) {
+                log.error("获取cnbh失败", e);
+            }
         }
         String uuid = IdUtils.uuid();
         userEntity.setId(uuid);
         userEntity.setCreateTime(new Date());
         orderService.insertUser(userEntity);
         return CommonResponse.okInstance();
+    }
+
+    private boolean testUserIsValid(String username, String password) {
+        OrderTaskEntity taskEntity = new OrderTaskEntity();
+        taskEntity.setUsername(username);
+        taskEntity.setPassword(password);
+        try {
+            Order.login(taskEntity);
+        } catch (Exception e) {
+            log.error("测试登录失败", e);
+            return false;
+        }
+        return true;
     }
 
     @ResponseBody

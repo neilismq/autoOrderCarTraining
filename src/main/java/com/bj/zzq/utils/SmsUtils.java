@@ -31,7 +31,7 @@ public class SmsUtils {
 
     public static void main(String[] args) {
 
-        sendSms("+8618210868830", "媳妇，在干嘛呢？");
+        sendSms("+8618210868830", "");
 //        Authenticate Client
 //        TwilioRestClient.Builder builder = new TwilioRestClient.Builder("", "");
 //        TwilioRestClient client = builder.accountSid("").build();

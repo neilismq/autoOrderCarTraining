@@ -16,24 +16,27 @@ public class CommonResponse<T> implements Serializable {
         return code;
     }
 
-    public void setCode(String code) {
+    public CommonResponse setCode(String code) {
         this.code = code;
+        return this;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public CommonResponse setMessage(String message) {
         this.message = message;
+        return this;
     }
 
     public T getBody() {
         return body;
     }
 
-    public void setBody(T body) {
+    public CommonResponse setBody(T body) {
         this.body = body;
+        return this;
     }
 
     public static CommonResponse okInstance() {
@@ -42,6 +45,7 @@ public class CommonResponse<T> implements Serializable {
         response.setMessage("成功");
         return response;
     }
+
     public static CommonResponse errorInstance() {
         CommonResponse<Serializable> response = new CommonResponse<>();
         response.setCode("300");
