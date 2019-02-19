@@ -36,7 +36,7 @@ import java.util.Map;
  * @Description:
  */
 public class HttpUtils {
-    private static Logger log = Logger.getLogger(HttpUtils.class.getClass());
+    private static Logger log = Logger.getLogger(HttpUtils.class);
     private static String cookie = "";
     //学车不登录地址
     public static String loginUrl = "https://api.xuechebu.com/usercenter/userinfo/login";

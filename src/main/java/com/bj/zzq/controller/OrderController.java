@@ -1,6 +1,8 @@
 package com.bj.zzq.controller;
 
 import com.bj.zzq.core.*;
+import com.bj.zzq.dao.OrderInfoDao;
+import com.bj.zzq.dao.UserDao;
 import com.bj.zzq.model.OrderInfoEntity;
 import com.bj.zzq.model.OrderTaskEntity;
 import com.bj.zzq.model.UserEntity;
@@ -8,6 +10,7 @@ import com.bj.zzq.service.OrderService;
 import com.bj.zzq.utils.CommonResponse;
 import com.bj.zzq.utils.DateUtils;
 import com.bj.zzq.utils.IdUtils;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.quartz.*;
@@ -38,7 +41,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-
+    @ApiOperation(value = "添加预约")
     @ResponseBody
     @RequestMapping(value = "/addOrder", method = RequestMethod.POST)
     public CommonResponse addJobs(@RequestBody OrderInfoEntity orderInfoEntity) throws SchedulerException {
@@ -47,23 +50,19 @@ public class OrderController {
         Date pickEndTime = Order.getPickEndTime(orderDate);
         Date now = new Date();
         if (now.after(pickEndTime)) {
-            CommonResponse response = CommonResponse.errorInstance();
-            response.setMessage("抢号时间设置不对");
-            return response;
+            return CommonResponse.errorInstance().setMessage("抢号时间设置不对");
+
         }
-        List<UserEntity> userEntities = orderService.selectUserByUserId(orderInfoEntity.getUserId());
-        if (userEntities == null || userEntities.size() == 0) {
-            CommonResponse response = CommonResponse.errorInstance();
-            response.setMessage("请选择用户！");
-            return response;
+        UserEntity userEntity = orderService.selectUserByUserId(orderInfoEntity.getUserId());
+        if (userEntity == null) {
+            return CommonResponse.errorInstance().setMessage("请选择用户");
         }
-        UserEntity userEntity = userEntities.get(0);
+
         List<OrderInfoEntity> orderInfoEntities = orderService.selectOrderInfoUnique(userEntity.getId(), orderInfoEntity);
         if (orderInfoEntities != null && orderInfoEntities.size() > 0) {
-            CommonResponse response = CommonResponse.errorInstance();
-            response.setMessage("此订单已经存在，请不要重复设置！");
-            return response;
+            return CommonResponse.errorInstance().setMessage("此订单已经存在，请不要重复设置");
         }
+
         orderInfoEntity.setId(IdUtils.uuid());
         orderInfoEntity.setCreateTime(new Date());
         orderInfoEntity.setStatus("0");// 0-没抢到，1-已抢到
@@ -81,39 +80,42 @@ public class OrderController {
         return CommonResponse.okInstance();
     }
 
+    @ApiOperation(value = "删除预约")
     @ResponseBody
     @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
     public CommonResponse deleteOrder(@RequestBody String id) throws SchedulerException {
+
         OrderInfoEntity orderInfoEntity = orderService.selectOrderbyId(id);
-        List<UserEntity> userEntities = orderService.selectUserByUserId(orderInfoEntity.getUserId());
-        if (userEntities != null && userEntities.size() > 0) {
-            UserEntity userEntity = userEntities.get(0);
-            JobKey jobKey = new JobKey("job_" + userEntity.getUsername() + "_" + orderInfoEntity.getOrderDate(), "job_group");
+        UserEntity userEntity = orderService.selectUserByUserId(orderInfoEntity.getUserId());
+        if (userEntity != null) {
+            JobKey jobKey = getJobKey(userEntity.getUsername(), DateUtils.dateToStr(orderInfoEntity.getOrderDate()));
             deleteJobs(new JobKey[]{jobKey});
             orderService.deleteOrderById(id);
         }
         return CommonResponse.okInstance();
+
     }
 
+    @ApiOperation(value = "添加用户")
     @ResponseBody
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
     public CommonResponse addUsers(@RequestBody UserEntity userEntity) {
         if (StringUtils.isEmpty(userEntity.getUsername())) {
-            return CommonResponse.errorInstance().setBody("账号不能为空，请检查！");
+            return CommonResponse.errorInstance().setMessage("账号不能为空，请检查！");
         }
         if (StringUtils.isEmpty(userEntity.getPassword())) {
-            return CommonResponse.errorInstance().setBody("密码不能为空，请检查！");
+            return CommonResponse.errorInstance().setMessage("密码不能为空，请检查！");
         }
         if (StringUtils.isEmpty(userEntity.getEmail())) {
-            return CommonResponse.errorInstance().setBody("邮箱不能为空，请检查！");
+            return CommonResponse.errorInstance().setMessage("邮箱不能为空，请检查！");
         }
         List<UserEntity> userEntities = orderService.selectUserByUsername(userEntity.getUsername());
         if (userEntities != null && userEntities.size() > 0) {
-            return CommonResponse.errorInstance().setBody("此用户已经存在，请检查！");
+            return CommonResponse.errorInstance().setMessage("此用户已经存在，请检查！");
         }
         boolean isValid = testUserIsValid(userEntity.getUsername(), userEntity.getPassword());
         if (!isValid) {
-            return CommonResponse.errorInstance().setBody("账号密码不正确，请检查！");
+            return CommonResponse.errorInstance().setMessage("账号密码不正确，请检查！");
         }
         if (StringUtils.isEmpty(userEntity.getCnbh())) {
             try {
@@ -130,6 +132,82 @@ public class OrderController {
         return CommonResponse.okInstance();
     }
 
+    @ApiOperation(value = "查询所有用户")
+    @ResponseBody
+    @RequestMapping(value = "/selectUsers", method = RequestMethod.POST)
+    public CommonResponse selectAllUsers(@RequestBody String keyword) {
+        List<UserEntity> userEntities = orderService.selectAllUsers(keyword);
+        return CommonResponse.okInstance().setBody(userEntities);
+    }
+
+    @ApiOperation(value = "根据用户查询预约")
+    @ResponseBody
+    @RequestMapping(value = "/selectOrdersByUser", method = RequestMethod.POST)
+    public CommonResponse selectOrderByUserId(@RequestBody OrderInfoEntity orderInfoEntity) {
+        List<OrderInfoEntity> orderInfoEntities = orderService.selectOrderByUserId(orderInfoEntity.getUserId());
+        return CommonResponse.okInstance().setBody(orderInfoEntities);
+    }
+
+    @ApiOperation(value = "暂停预约")
+    @ResponseBody
+    @RequestMapping(value = "/pauseOrder", method = RequestMethod.POST)
+    public CommonResponse pauseOrder(@RequestBody String orderId) throws SchedulerException {
+        OrderInfoEntity orderInfoEntity = orderService.selectOrderbyId(orderId);
+        if (orderInfoEntity == null) {
+            return CommonResponse.errorInstance().setMessage("预约不存在！");
+        }
+        UserEntity userEntity = orderService.selectUserByUserId(orderId);
+        if (userEntity == null) {
+            return CommonResponse.errorInstance().setMessage("用户不存在！");
+        }
+        JobKey jobKey = getJobKey(userEntity.getUsername(), DateUtils.dateToStr(orderInfoEntity.getOrderDate()));
+        pauseJobs(new JobKey[]{jobKey});
+        orderInfoEntity.setIsStop("1");//暂停
+        orderService.updateOrder(orderInfoEntity);
+        return CommonResponse.okInstance();
+    }
+
+    @ApiOperation(value = "恢复暂停的预约")
+    @ResponseBody
+    @RequestMapping(value = "/resumeOrder", method = RequestMethod.POST)
+    public CommonResponse resumeOrder(@RequestBody String orderId) throws SchedulerException {
+        OrderInfoEntity orderInfoEntity = orderService.selectOrderbyId(orderId);
+        if (orderInfoEntity == null) {
+            return CommonResponse.errorInstance().setMessage("预约不存在！");
+        }
+        UserEntity userEntity = orderService.selectUserByUserId(orderId);
+        if (userEntity == null) {
+            return CommonResponse.errorInstance().setMessage("用户不存在！");
+        }
+        JobKey jobKey = getJobKey(userEntity.getUsername(), DateUtils.dateToStr(orderInfoEntity.getOrderDate()));
+        resumeJobs(new JobKey[]{jobKey});
+
+        orderInfoEntity.setIsStop("0");//0-正常
+        orderService.updateOrder(orderInfoEntity);
+        return CommonResponse.okInstance();
+    }
+
+    private JobKey getJobKey(String username, String orderDate) {
+        return new JobKey("job_" + username + "_" + orderDate, "job_group");
+    }
+
+    private void deleteJobs(JobKey[] jobKeys) throws SchedulerException {
+        scheduler.deleteJobs(Arrays.asList(jobKeys));
+    }
+
+    private void pauseJobs(JobKey[] jobKeys) throws SchedulerException {
+        for (JobKey jobKey : jobKeys) {
+            scheduler.pauseJob(jobKey);
+        }
+    }
+
+
+    private void resumeJobs(JobKey[] jobKeys) throws SchedulerException {
+        for (JobKey jobKey : jobKeys) {
+            scheduler.resumeJob(jobKey);
+        }
+    }
+
     private boolean testUserIsValid(String username, String password) {
         OrderTaskEntity taskEntity = new OrderTaskEntity();
         taskEntity.setUsername(username);
@@ -141,90 +219,6 @@ public class OrderController {
             return false;
         }
         return true;
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
-    public CommonResponse deleteUser(@RequestBody String id) {
-        orderService.deleteUserById(id);
-        return CommonResponse.okInstance();
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/selectUsers", method = RequestMethod.POST)
-    public CommonResponse selectAllUsers() {
-        List<UserEntity> userEntities = orderService.selectAllUsers();
-        CommonResponse response = CommonResponse.okInstance();
-        response.setBody(userEntities);
-        return response;
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/selectOrdersByUser", method = RequestMethod.POST)
-    public CommonResponse selectOrderByUserId(@RequestBody OrderInfoEntity orderInfoEntity) {
-        List<OrderInfoEntity> orderInfoEntities = orderService.selectOrderByUserId(orderInfoEntity.getUserId());
-        CommonResponse response = CommonResponse.okInstance();
-        response.setBody(orderInfoEntities);
-        return response;
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/deleteJobs", method = RequestMethod.POST)
-    public CommonResponse deleteJobs(@RequestBody JobKey[] jobKeys) throws SchedulerException {
-        scheduler.deleteJobs(Arrays.asList(jobKeys));
-        return CommonResponse.okInstance();
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/pauseJobs", method = RequestMethod.POST)
-    public CommonResponse pauseJobs(@RequestBody JobKey[] jobKeys) throws SchedulerException {
-        for (JobKey jobKey : jobKeys) {
-            scheduler.pauseJob(jobKey);
-        }
-        return CommonResponse.okInstance();
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/resumeJobs", method = RequestMethod.POST)
-    public CommonResponse resumeJobs(@RequestBody JobKey[] jobKeys) throws SchedulerException {
-        for (JobKey jobKey : jobKeys) {
-            scheduler.resumeJob(jobKey);
-        }
-        return CommonResponse.okInstance();
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/startSchduler", method = RequestMethod.POST)
-    public CommonResponse startSchdule() throws SchedulerException {
-        scheduler.start();
-        scheduler.standby();
-        return CommonResponse.okInstance();
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/standbySchduler", method = RequestMethod.POST)
-    public CommonResponse standbySchdule() throws SchedulerException {
-        scheduler.start();
-        scheduler.standby();
-        return CommonResponse.okInstance();
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/querySchdulerStatus", method = RequestMethod.POST)
-    public CommonResponse querySchduleStatus() throws SchedulerException {
-        String status = "";
-        if (scheduler.isInStandbyMode()) {
-            status = "待机";
-        } else if (scheduler.isShutdown()) {
-            status = "关机";
-        } else if (scheduler.isStarted()) {
-            status = "正常";
-        } else {
-            status = "未知";
-        }
-        CommonResponse response = CommonResponse.okInstance();
-        response.setBody(status);
-        return response;
     }
 
     @ResponseBody

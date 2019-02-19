@@ -6,12 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * @Author: zhaozhiqiang
  * @Date: 2019/1/11
  * @Description:
  */
+@EnableSwagger2
 @MapperScan(basePackages = "com.bj.zzq.mapper")
 @SpringBootApplication
 public class AutoOrderApplication {

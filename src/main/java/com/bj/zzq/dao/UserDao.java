@@ -25,6 +25,10 @@ public class UserDao {
         return userEntityMapper.selectByExample(example);
     }
 
+    public UserEntity selectByPrimaryKey(String id) {
+        return userEntityMapper.selectByPrimaryKey(id);
+    }
+
     public void deleteById(String id) {
         userEntityMapper.deleteByPrimaryKey(id);
     }

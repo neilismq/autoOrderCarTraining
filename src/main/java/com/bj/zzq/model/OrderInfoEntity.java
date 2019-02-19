@@ -15,7 +15,7 @@ public class OrderInfoEntity implements Serializable {
     private Date createTime;
 
     private String status;
-
+    //0-正常 1-暂停
     private String isStop;
 
     private static final long serialVersionUID = 1L;

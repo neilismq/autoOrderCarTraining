@@ -34,7 +34,7 @@ public class InitApplicationTask {
     @PostConstruct
     public void init() {
         List<OrderInfoEntity> orderInfoEntities = orderService.selectAllExecutableOrders();
-        List<UserEntity> userEntities = orderService.selectAllUsers();
+        List<UserEntity> userEntities = orderService.selectAllUsers(null);
         Map<String, UserEntity> collect = userEntities.stream().collect(Collectors.toMap(UserEntity::getId, Function.identity()));
         orderInfoEntities.stream().forEach(orderInfoEntity -> {
             OrderTaskEntity taskEntity = new OrderTaskEntity();

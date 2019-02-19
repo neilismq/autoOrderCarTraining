@@ -6,6 +6,8 @@ import com.bj.zzq.model.OrderInfoEntity;
 import com.bj.zzq.model.OrderInfoEntityExample;
 import com.bj.zzq.model.UserEntity;
 import com.bj.zzq.model.UserEntityExample;
+import com.bj.zzq.utils.StringUtils;
+import com.sun.org.apache.xml.internal.resolver.readers.ExtendedXMLCatalogReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,11 @@ public class OrderService {
         userDao.insert(userEntity);
     }
 
-    public List<UserEntity> selectAllUsers() {
+    public List<UserEntity> selectAllUsers(String keyword) {
+        UserEntityExample example = new UserEntityExample();
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(keyword)) {
+            example.createCriteria().andUsernameLike(StringUtils.likeStr(keyword)).andPasswordLike(StringUtils.likeStr(keyword)).andEmailLike(StringUtils.likeStr(keyword)).andCnbhLike(StringUtils.likeStr(keyword));
+        }
         return userDao.selectExample(new UserEntityExample());
     }
 
@@ -66,7 +72,7 @@ public class OrderService {
         orderInfoDao.deleteById(id);
     }
 
-    //status 1
+
     public void updateOrderStatusSuccess(OrderInfoEntity orderInfoEntity) {
         orderInfoDao.update(orderInfoEntity);
     }
@@ -78,15 +84,17 @@ public class OrderService {
         return orderInfoDao.selectExample(example);
     }
 
-    public List<UserEntity> selectUserByUserId(String id) {
-        UserEntityExample example = new UserEntityExample();
-        example.createCriteria().andIdEqualTo(id);
-        return userDao.selectExample(example);
+    public UserEntity selectUserByUserId(String id) {
+        return userDao.selectByPrimaryKey(id);
     }
 
     public List<OrderInfoEntity> selectAllExecutableOrders() {
         OrderInfoEntityExample example = new OrderInfoEntityExample();
         example.createCriteria().andStatusEqualTo("0").andIsStopEqualTo("0").andOrderDateGreaterThan(new Date());
         return orderInfoDao.selectExample(example);
+    }
+
+    public void updateOrder(OrderInfoEntity orderInfoEntity) {
+        orderInfoDao.update(orderInfoEntity);
     }
 }

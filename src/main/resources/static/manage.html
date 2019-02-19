@@ -156,7 +156,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#showUsers").click(function () {
-            $.post("/order/selectUsers", {}, function (data) {
+            $.post("/order/selectUsers", {keyword: null}, function (data) {
                 if (data.code == 200) {
                     var users = data.body;
                     var $tbody = $("#users > tbody");
@@ -216,10 +216,11 @@
             return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
         }
     }
+
     function formatDate2(val) {
         if (val) {
             var date = new Date(val);
-            return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " ;
+            return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " ";
         }
     }
 
