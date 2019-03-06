@@ -6,67 +6,28 @@ import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * @Author: zhaozhiqiang
  * @Date: 2019/2/18
  * @Description:
  */
 public class SmsUtils {
-    public static final String ACCOUNT_SID = "ACc63e3cd3eccf69a02db167ae5241e5ec";
-    public static final String AUTH_TOKEN = "cdf5cda47644ec877d8297c8f9790d95";
+    public static final String username = "zzq123456";
+    public static final String secret = "d41d8cd98f00b204e980";
 
-    /**
-     * 发送短信
-     *
-     * @param to
-     * @param content
-     */
-    public static void sendSms(String to, String content) {
-        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-        Message message = Message.creator(new PhoneNumber(to),
-                new PhoneNumber("+16783596025"),
-                content).create();
-        System.out.println(message.getSid());
+    public static void sendSms(String phoneNum, String sendText) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, URISyntaxException {
+        String url = "http://utf8.api.smschinese.cn/?Uid=" + username + "&Key=" + secret + "&smsMob=" + phoneNum + "&smsText=" + sendText;
+        HttpUtils.doHttp("GET", url, null, null, null);
     }
 
-    public static void main(String[] args) {
-
-        sendSms("+8618210868830", "");
-//        Authenticate Client
-//        TwilioRestClient.Builder builder = new TwilioRestClient.Builder("", "");
-//        TwilioRestClient client = builder.accountSid("").build();
-
-        //Try sending yourself an SMS message, like this:
-//        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-//        Message message = Message.creator(new PhoneNumber("+8618511914092"),
-//                new PhoneNumber("+16783596025"),
-//                "2222").create();
-//
-//        System.out.println(message.getSid());
-
-        //Create A New Record
-//        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-//
-//        Call call = Call.creator(new PhoneNumber("+14155551212"), new PhoneNumber("+15017250604"),
-//                new URI("http://demo.twilio.com/docs/voice.xml")).create();
-//
-//        System.out.println(call.getSid());
-
-        //Get Existing Record
-//        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-//
-//        Call call = Call.fetcher("CA42ed11f93dc08b952027ffbc406d0868").fetch();
-//
-//        System.out.println(call.getTo());
-
-        //Iterate Through Records
-//        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-//
-//        ResourceSet<Call> calls = Call.reader().read();
-//
-//        for (Call call : calls) {
-//            System.out.println(call.getDirection());
-//        }
+    public static void main(String[] args) throws URISyntaxException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException {
+        sendSms("18511914092","恭喜发财");
     }
 
 }
